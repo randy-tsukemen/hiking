@@ -92,6 +92,33 @@ def best(
     _output(md, out)
 
 
+@app.command("rooms")
+def rooms(
+    course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
+    date: str = typer.Argument(..., help="出發日 YYYY-MM-DD"),
+) -> None:
+    """查詢套裝方案某出發日的逐晚住宿空位（巴士有位≠房間有位）。"""
+    from .travelanswer import check_room_availability
+
+    with console.status("查詢預約系統房間空位中…"):
+        try:
+            r = check_room_availability(course_no, date)
+        except RuntimeError as e:
+            console.print(f"[red]{e}[/red]")
+            raise typer.Exit(1)
+    lines = [
+        f"# {r.title or f'course {course_no}'}（{r.depart_date} 出發）",
+        "",
+        "| 晚次 | 住宿 | 房型 | 空位 |",
+        "|---|---|---|---|",
+    ]
+    for n in r.nights:
+        mark = "✅" if n.ok else "❌"
+        lines.append(f"| {n.night} | {n.facility} | {n.room_type} | {mark} {n.status}（{n.label}） |")
+    lines += ["", "**全程可訂：" + ("✅ 可以" if r.all_ok else "❌ 不行（有晚次已滿）") + "**"]
+    console.print(Markdown("\n".join(lines)))
+
+
 @app.command("plan")
 def plan(
     mountain: str = typer.Argument(..., help="山名（支援日文、假名、常見別名）"),
@@ -111,7 +138,7 @@ def plan(
     _output(md, out)
 
 
-_COMMANDS = {"list", "weekend", "best", "plan"}
+_COMMANDS = {"list", "weekend", "best", "plan", "rooms"}
 
 
 def run() -> None:
