@@ -90,7 +90,7 @@ class TourDetail:
 
     @property
     def detail_url(self) -> str:
-        return f"https://bus.maitabi.jp/bus/detail.html?course_no={self.course_no}"
+        return f"https://bus.maitabi.jp/detail.html?course_no={self.course_no}"
 
 
 class MaitabiClient:

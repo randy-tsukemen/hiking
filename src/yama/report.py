@@ -89,7 +89,7 @@ def _course_section(
             lines.append(f"  - [方案詳細]({d.detail_url})")
         else:
             lines.append(
-                f"  - [方案詳細](https://bus.maitabi.jp/bus/detail.html?course_no={t.course_no})"
+                f"  - [方案詳細](https://bus.maitabi.jp/detail.html?course_no={t.course_no})"
             )
     lines.append("")
     return lines
