@@ -1,0 +1,15 @@
+{
+  "name": "yama-tools",
+  "owner": {
+    "name": "randy-tsukemen"
+  },
+  "description": "日本登山規劃工具：毎日あるぺん号巴士、山屋、Yamap 路線圖、山頂天氣",
+  "plugins": [
+    {
+      "name": "yama",
+      "source": "./plugins/yama",
+      "description": "登山規劃助手：說出想爬的山，取得巴士方案（含預約連結）、山屋、路線圖與天氣適宜度",
+      "version": "0.1.0"
+    }
+  ]
+}

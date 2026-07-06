@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+.yama_cache/
+
+# LINE bot：僅本機使用，不公開
+bot/
+tests/test_bot_tools.py

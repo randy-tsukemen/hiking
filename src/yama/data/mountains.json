@@ -1,0 +1,1038 @@
+{
+  "mountains": [
+    {
+      "id": "tsubakuro",
+      "name_ja": "燕岳",
+      "aliases": [
+        "燕岳",
+        "つばくろだけ",
+        "ツバクロ",
+        "燕",
+        "Tsubakuro"
+      ],
+      "elevation": 2763,
+      "lat": 36.4041,
+      "lon": 137.7128,
+      "difficulty": "中級",
+      "area_hint": "北アルプス（表銀座起點，合戦尾根）",
+      "maitabi": {
+        "area_names": [
+          "燕岳・常念岳"
+        ],
+        "title_keywords": [
+          "中房温泉",
+          "燕"
+        ]
+      },
+      "trailheads": [
+        "中房温泉"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/150",
+        "model_courses": [
+          {
+            "title": "燕岳 往復コース（中房温泉）",
+            "url": "https://yamap.com/model-courses/23189"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 中房温泉→合戦尾根→燕山荘（泊）→燕岳往返；Day2 原路下山",
+          "recommended_hut": "燕山荘"
+        },
+        {
+          "days": "2泊3日（表銀座入門）",
+          "plan": "Day1 中房温泉→燕山荘（泊）；Day2 稜線縱走→大天荘（泊）；Day3 常念小屋經一ノ沢下山",
+          "recommended_hut": "燕山荘＋大天荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "燕山荘",
+          "elevation": 2712,
+          "note": "北アルプス最具人氣的山屋之一，旺季需盡早預約",
+          "booking_url": "https://www.enzanso.co.jp/",
+          "phone": "0263-32-1535"
+        },
+        {
+          "name": "大天荘",
+          "elevation": 2870,
+          "note": "大天井岳山頂直下，表銀座縱走中繼點（燕山荘グループ）",
+          "booking_url": "https://www.enzanso.co.jp/daitenso",
+          "phone": "0263-32-1535"
+        },
+        {
+          "name": "中房温泉",
+          "elevation": 1462,
+          "note": "登山口的秘湯旅館，前泊後泊皆宜",
+          "booking_url": "https://nakabusa.com/",
+          "phone": "0263-77-1488"
+        }
+      ]
+    },
+    {
+      "id": "kisokoma",
+      "name_ja": "木曽駒ヶ岳",
+      "aliases": [
+        "木曽駒ヶ岳",
+        "木曽駒ケ岳",
+        "木曽駒",
+        "きそこま",
+        "Kisokoma"
+      ],
+      "elevation": 2956,
+      "lat": 35.7894,
+      "lon": 137.8041,
+      "difficulty": "初級",
+      "area_hint": "中央アルプス最高峰（千畳敷カール，纜車可達 2612m）",
+      "maitabi": {
+        "area_names": [
+          "木曽駒（菅の台）"
+        ],
+        "title_keywords": [
+          "木曽駒",
+          "菅の台"
+        ]
+      },
+      "trailheads": [
+        "菅の台バスセンター（千畳敷ロープウェイ）"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/100",
+        "model_courses": [
+          {
+            "title": "木曽駒ヶ岳（千畳敷カール）",
+            "url": "https://yamap.com/mountains/100/model_courses"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "夜行日帰り",
+          "plan": "夜行巴士→菅の台→纜車上千畳敷→乗越浄土→木曽駒ヶ岳往返→當日回程",
+          "recommended_hut": null
+        },
+        {
+          "days": "1泊2日",
+          "plan": "Day1 千畳敷→宝剣山荘（泊）；Day2 木曽駒ヶ岳→（體力許可）宝剣岳→下山",
+          "recommended_hut": "宝剣山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "宝剣山荘",
+          "elevation": 2870,
+          "note": "乗越浄土旁，位置便利",
+          "booking_url": "https://miyadakankou.co.jp/houkensansou",
+          "phone": "090-7804-2185"
+        },
+        {
+          "name": "ホテル千畳敷",
+          "elevation": 2612,
+          "note": "纜車站直結的日本最高飯店，舒適但價位較高",
+          "booking_url": "https://www.chuo-alps.com/hotel/",
+          "phone": "0265-83-3844"
+        }
+      ]
+    },
+    {
+      "id": "okuhotaka",
+      "name_ja": "奥穂高岳",
+      "aliases": [
+        "奥穂高岳",
+        "奥穂",
+        "穂高岳",
+        "穂高",
+        "涸沢",
+        "おくほたか",
+        "Okuhotaka"
+      ],
+      "elevation": 3190,
+      "lat": 36.2894,
+      "lon": 137.6481,
+      "difficulty": "上級",
+      "area_hint": "北アルプス最高峰・日本第 3 高峰（經典路線：上高地～涸沢）",
+      "maitabi": {
+        "area_names": [
+          "上高地"
+        ],
+        "title_keywords": [
+          "涸沢",
+          "穂高",
+          "上高地"
+        ]
+      },
+      "trailheads": [
+        "上高地"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/143",
+        "model_courses": [
+          {
+            "title": "奥穂高岳 往復コース（上高地～涸沢）",
+            "url": "https://yamap.com/model-courses/19496"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "2泊3日",
+          "plan": "Day1 上高地→横尾→涸沢（泊）；Day2 ザイテングラート→穂高岳山荘→奥穂高岳往返（泊）；Day3 下山回上高地",
+          "recommended_hut": "涸沢ヒュッテ＋穂高岳山荘"
+        },
+        {
+          "days": "1泊2日（僅涸沢賞楓）",
+          "plan": "Day1 上高地→涸沢（泊）；Day2 原路下山（不登頂，適合紅葉季）",
+          "recommended_hut": "涸沢ヒュッテ"
+        }
+      ],
+      "huts": [
+        {
+          "name": "涸沢ヒュッテ",
+          "elevation": 2309,
+          "note": "涸沢カール地標，紅葉季一位難求",
+          "booking_url": "https://www.karasawa-hyutte.com/",
+          "phone": "090-9002-2534"
+        },
+        {
+          "name": "涸沢小屋",
+          "elevation": 2350,
+          "note": "涸沢カール北側，往北穂方向",
+          "booking_url": "https://www.karasawagoya.com/",
+          "phone": "090-2204-1300"
+        },
+        {
+          "name": "穂高岳山荘",
+          "elevation": 2996,
+          "note": "白出のコル，登頂奥穂的前進基地",
+          "booking_url": "https://www.hotakadakesanso.com/",
+          "phone": "090-7869-0045"
+        }
+      ]
+    },
+    {
+      "id": "jonendake",
+      "name_ja": "常念岳",
+      "aliases": [
+        "常念岳",
+        "じょうねんだけ",
+        "ジョウネンダケ",
+        "常念",
+        "Jonendake",
+        "Jonen"
+      ],
+      "elevation": 2857,
+      "lat": 36.3256,
+      "lon": 137.7275,
+      "difficulty": "中級",
+      "area_hint": "北アルプス（常念山脈主峰，一ノ沢起點；金字塔狀山容為安曇野地標）",
+      "maitabi": {
+        "area_names": [
+          "燕岳・常念岳"
+        ],
+        "title_keywords": [
+          "常念",
+          "一ノ沢"
+        ]
+      },
+      "trailheads": [
+        "一ノ沢"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/144",
+        "model_courses": [
+          {
+            "title": "常念岳のモデルコース一覧",
+            "url": "https://yamap.com/mountains/144/model_courses"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "日帰り",
+          "plan": "夜行巴士清晨抵一ノ沢登山口→大滝→常念乘越（常念小屋）→常念岳山頂往返→原路下山至一ノ沢",
+          "recommended_hut": "常念小屋"
+        },
+        {
+          "days": "1泊2日",
+          "plan": "Day1 夜行抵一ノ沢→常念乘越→常念小屋（泊）→常念岳往返；Day2 常念岳→蝶ヶ岳縱走或原路下山",
+          "recommended_hut": "常念小屋"
+        }
+      ],
+      "huts": [
+        {
+          "name": "常念小屋",
+          "elevation": 2466,
+          "note": "位於常念乘越，可眺望槍・穗高連峰；旺季採預約制，開山期4/29〜11/3，建議提早電話或線上預約",
+          "booking_url": "https://www.mt-jonen.com/",
+          "phone": "0263-37-5088"
+        }
+      ]
+    },
+    {
+      "id": "chogatake",
+      "name_ja": "蝶ヶ岳",
+      "aliases": [
+        "蝶ヶ岳",
+        "蝶ケ岳",
+        "ちょうがたけ",
+        "チョウガタケ",
+        "蝶",
+        "Chogatake",
+        "Chougatake"
+      ],
+      "elevation": 2677,
+      "lat": 36.2875,
+      "lon": 137.7261,
+      "difficulty": "中級",
+      "area_hint": "北アルプス（常念山脈南部，三股起點；緩坡好走、被視為北阿爾卑斯入門，正對槍・穗高的展望台）",
+      "maitabi": {
+        "area_names": [
+          "蝶ヶ岳（三股）"
+        ],
+        "title_keywords": [
+          "蝶ヶ岳",
+          "三股"
+        ]
+      },
+      "trailheads": [
+        "三股"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/102",
+        "model_courses": [
+          {
+            "title": "蝶ヶ岳 往復コース",
+            "url": "https://yamap.com/model-courses/30194"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 夜行巴士清晨抵三股登山口→まめうち平→大滝山分岐→蝶ヶ岳ヒュッテ（泊）→蝶ヶ岳山頂賞夕陽；Day2 山頂看日出→原路下山至三股",
+          "recommended_hut": "蝶ヶ岳ヒュッテ"
+        },
+        {
+          "days": "1泊2日（周回）",
+          "plan": "Day1 三股→蝶ヶ岳ヒュッテ（泊）；Day2 蝶ヶ岳→蝶槍→常念岳縱走→常念乘越→一ノ沢或原路（體力型行程）",
+          "recommended_hut": "蝶ヶ岳ヒュッテ"
+        }
+      ],
+      "huts": [
+        {
+          "name": "蝶ヶ岳ヒュッテ",
+          "elevation": 2664,
+          "note": "位於山頂稜線，正對槍・穗高的絕佳展望；採預約制（現地電話僅受理當日住宿），建議走官網或線上預約",
+          "booking_url": "https://chougatake.com/",
+          "phone": "0263-58-2210"
+        }
+      ]
+    },
+    {
+      "id": "yarigatake",
+      "name_ja": "槍ヶ岳",
+      "aliases": [
+        "槍ヶ岳",
+        "槍ケ岳",
+        "やりがたけ",
+        "ヤリガタケ",
+        "槍",
+        "Yarigatake",
+        "Yari"
+      ],
+      "elevation": 3180,
+      "lat": 36.3419,
+      "lon": 137.6475,
+      "difficulty": "上級",
+      "area_hint": "北アルプス（日本第5高峰，天衝之槍狀山容；上高地經槍沢的王道路線，山頂前有岩場梯子）",
+      "maitabi": {
+        "area_names": [
+          "上高地"
+        ],
+        "title_keywords": [
+          "槍ヶ岳",
+          "上高地",
+          "槍沢"
+        ]
+      },
+      "trailheads": [
+        "上高地"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/142",
+        "model_courses": [
+          {
+            "title": "槍ヶ岳（上高地）",
+            "url": "https://yamap.com/model-courses/25438"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "2泊3日",
+          "plan": "Day1 夜行巴士清晨抵上高地→明神→徳沢→横尾→槍沢ロッヂ（泊）；Day2 槍沢→坊主岩→槍ヶ岳山荘（泊）→槍ヶ岳山頂往返；Day3 原路下山回上高地",
+          "recommended_hut": "槍ヶ岳山荘"
+        },
+        {
+          "days": "1泊2日（健脚）",
+          "plan": "Day1 夜行抵上高地→横尾→槍沢→槍ヶ岳山荘（泊）→山頂往返；Day2 原路長途下山回上高地",
+          "recommended_hut": "槍ヶ岳山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "槍ヶ岳山荘",
+          "elevation": 3080,
+          "note": "山頂正下方、位置絕佳的大型山屋，攻頂基地；開山期採預約制，1個月前上午9點起開放線上或電話預約",
+          "booking_url": "https://www.yarigatake.co.jp/",
+          "phone": "090-2641-1911"
+        },
+        {
+          "name": "ヒュッテ大槍",
+          "elevation": 2884,
+          "note": "東鎌尾根上、以餐點聞名的山屋，燕山荘集團經營，適合表銀座縱走者",
+          "booking_url": "https://www.enzanso.co.jp/hutte-ooyari",
+          "phone": "0263-32-1535"
+        },
+        {
+          "name": "槍沢ロッヂ",
+          "elevation": 1820,
+          "note": "槍沢路線中途的山屋，適合夜行抵達後第一晚住宿以分段攻頂，可洗澡",
+          "booking_url": "https://www.yarigatake.co.jp/",
+          "phone": "090-8250-2297"
+        }
+      ]
+    },
+    {
+      "id": "shirouma",
+      "name_ja": "白馬岳",
+      "aliases": [
+        "白馬岳",
+        "しろうまだけ",
+        "シロウマダケ",
+        "白馬",
+        "Shirouma",
+        "Shirumadake"
+      ],
+      "elevation": 2932,
+      "lat": 36.7585,
+      "lon": 137.7586,
+      "difficulty": "中級",
+      "area_hint": "北アルプス（後立山連峰，猿倉經大雪渓的經典路線，殘雪期需冰爪）",
+      "maitabi": {
+        "area_names": [
+          "白馬猿倉"
+        ],
+        "title_keywords": [
+          "白馬",
+          "猿倉",
+          "大雪渓"
+        ]
+      },
+      "trailheads": [
+        "猿倉"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/17",
+        "model_courses": [
+          {
+            "title": "白馬岳 大雪渓コース（猿倉）",
+            "url": "https://yamap.com/mountains/17/model_courses"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 猿倉→白馬尻→大雪渓→白馬岳頂上宿舎/白馬山荘（泊）→白馬岳山頂往返；Day2 原路經大雪渓下山至猿倉",
+          "recommended_hut": "白馬山荘"
+        },
+        {
+          "days": "2泊3日",
+          "plan": "Day1 猿倉→大雪渓→白馬山荘（泊）；Day2 白馬岳→三国境→白馬大池→往返或縱走；Day3 下山",
+          "recommended_hut": "白馬山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "白馬山荘",
+          "elevation": 2832,
+          "note": "位於白馬岳山頂正下方，號稱日本最大的山屋，旺季務必提前預約；由白馬館營運",
+          "booking_url": "https://hakubakan.com/",
+          "phone": "0261-72-2002"
+        },
+        {
+          "name": "白馬岳頂上宿舎（村営）",
+          "elevation": 2730,
+          "note": "白馬村振興公社營運的村營山屋，位置略低於白馬山荘，另有帳篷場；預約與帳篷皆需事前申請",
+          "booking_url": "https://yamagoya.hakubakousha.com/reservation/",
+          "phone": "0261-75-3788"
+        }
+      ]
+    },
+    {
+      "id": "karamatsu",
+      "name_ja": "唐松岳",
+      "aliases": [
+        "唐松岳",
+        "からまつだけ",
+        "カラマツダケ",
+        "唐松",
+        "Karamatsu",
+        "Karamatsudake"
+      ],
+      "elevation": 2696,
+      "lat": 36.6872,
+      "lon": 137.7547,
+      "difficulty": "中級",
+      "area_hint": "北アルプス（後立山連峰，八方尾根經纜車+吊椅上八方池山荘，親民路線）",
+      "maitabi": {
+        "area_names": [
+          "白馬八方・栂池・扇沢・七倉"
+        ],
+        "title_keywords": [
+          "唐松",
+          "八方"
+        ]
+      },
+      "trailheads": [
+        "八方（八方池山荘・八方尾根ゴンドラ）"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/58",
+        "model_courses": [
+          {
+            "title": "唐松岳 八方尾根コース",
+            "url": "https://yamap.com/mountains/58/model_courses"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 八方（纜車+吊椅）→八方池山荘→八方池→丸山→唐松岳頂上山荘（泊）→唐松岳山頂往返；Day2 原路下山返回八方",
+          "recommended_hut": "唐松岳頂上山荘"
+        },
+        {
+          "days": "日帰り",
+          "plan": "清晨搭首班纜車上八方池山荘→八方尾根→唐松岳山頂往返→下午下山（適合體力充足者，需注意末班纜車時間）",
+          "recommended_hut": "唐松岳頂上山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "唐松岳頂上山荘",
+          "elevation": 2620,
+          "note": "位於唐松岳與五竜岳之間的稜線上，是北アルプス入門的熱門山屋；建議WEB預約（宿泊日30天前開放）",
+          "booking_url": "http://karamatsu.jp/",
+          "phone": "090-5204-7876"
+        }
+      ]
+    },
+    {
+      "id": "tateyama",
+      "name_ja": "立山（雄山）",
+      "aliases": [
+        "立山",
+        "雄山",
+        "たてやま",
+        "おやま",
+        "タテヤマ",
+        "オヤマ",
+        "Tateyama",
+        "Oyama"
+      ],
+      "elevation": 3003,
+      "lat": 36.5758,
+      "lon": 137.6197,
+      "difficulty": "初級",
+      "area_hint": "北アルプス（立山連峰，由室堂經一の越登頂，交通便利；主峰大汝山3015m，雄山3003m）",
+      "maitabi": {
+        "area_names": [
+          "立山（室堂）"
+        ],
+        "title_keywords": [
+          "立山",
+          "室堂",
+          "雄山"
+        ]
+      },
+      "trailheads": [
+        "室堂"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/14425",
+        "model_courses": [
+          {
+            "title": "立山（雄山）室堂起點コース",
+            "url": "https://yamap.com/mountains/14425/model_courses"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 室堂→一の越（一の越山荘）→雄山山頂往返，宿一の越山荘或返回雷鳥荘（泊）；Day2 立山三山縱走（大汝山・富士ノ折立）或室堂周邊散策後下山",
+          "recommended_hut": "一の越山荘"
+        },
+        {
+          "days": "日帰り",
+          "plan": "室堂→一の越→雄山山頂往返→下山返回室堂（約4-5小時，適合搭乘立山黑部阿爾卑斯路線當日往返）",
+          "recommended_hut": "一の越山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "雷鳥荘",
+          "elevation": 2400,
+          "note": "室堂平的溫泉山屋（らいちょう温泉），可泡湯，設備舒適；採WEB預約與信用卡事前結帳",
+          "booking_url": "https://www.raichoso.com/"
+        },
+        {
+          "name": "みくりが池温泉",
+          "elevation": 2410,
+          "note": "日本最高所的天然溫泉旅宿，距室堂ターミナル步行約15分；可網路或電話預約",
+          "booking_url": "https://www.mikuri.com/"
+        },
+        {
+          "name": "一の越山荘",
+          "elevation": 2700,
+          "note": "位於雄山登頂起點的一の越，距室堂約1小時，最靠近雄山山頂的山屋",
+          "booking_url": "http://tateyama-1nokoshi.in.coocan.jp/",
+          "phone": "090-1632-4629"
+        }
+      ]
+    },
+    {
+      "id": "yakushidake",
+      "name_ja": "薬師岳",
+      "aliases": [
+        "薬師岳",
+        "やくしだけ",
+        "ヤクシダケ",
+        "薬師",
+        "薬師ヶ岳",
+        "薬師ケ岳",
+        "Yakushidake",
+        "Yakushi"
+      ],
+      "elevation": 2926,
+      "lat": 36.4689,
+      "lon": 137.5447,
+      "difficulty": "上級",
+      "area_hint": "北アルプス（富山県，折立登山口起點，太郎平經薬師峠上薬師岳，行程長需2天以上）",
+      "maitabi": {
+        "area_names": [
+          "薬師・黒部（折立）"
+        ],
+        "title_keywords": [
+          "薬師",
+          "折立"
+        ]
+      },
+      "trailheads": [
+        "折立"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/52",
+        "model_courses": [
+          {
+            "title": "折立-太郎平-薬師岳 往復コース",
+            "url": "https://yamap.com/model-courses/31777"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "搭夜行巴士清晨抵折立→太郎坂上太郎平小屋→薬師峠→薬師岳山荘（泊）→薬師岳登頂；Day2 原路下山至折立",
+          "recommended_hut": "薬師岳山荘"
+        },
+        {
+          "days": "2泊3日",
+          "plan": "Day1 折立→太郎平小屋（泊）；Day2 薬師峠→薬師岳往返，返回太郎平小屋（泊）；Day3 折立下山（行程較從容）",
+          "recommended_hut": "太郎平小屋"
+        }
+      ],
+      "huts": [
+        {
+          "name": "太郎平小屋",
+          "elevation": 2330,
+          "note": "北アルプス縱走的要衝，位於太郎平開闊台地，是折立上山的第一晚據點；由ロッジ太郎經營",
+          "booking_url": "https://ltaro.com/",
+          "phone": "076-482-1418"
+        },
+        {
+          "name": "薬師岳山荘",
+          "elevation": 2701,
+          "note": "距薬師岳山頂最近的山屋，位於薬師平上方，登頂與看日出最方便；電話預約制（無網路預約）",
+          "booking_url": "https://www.yakushidake-sansou.com/",
+          "phone": "076-451-9222"
+        }
+      ]
+    },
+    {
+      "id": "akadake",
+      "name_ja": "赤岳",
+      "aliases": [
+        "赤岳",
+        "あかだけ",
+        "アカダケ",
+        "赤",
+        "Akadake",
+        "Aka-dake"
+      ],
+      "elevation": 2899,
+      "lat": 35.9707,
+      "lon": 138.3699,
+      "difficulty": "中級",
+      "area_hint": "八ヶ岳最高峰（美濃戸口登山口，經行者小屋走文三郎尾根或地蔵尾根，山頂前段有岩場與鎖場）",
+      "maitabi": {
+        "area_names": [
+          "八ヶ岳（深夜着・朝着）"
+        ],
+        "title_keywords": [
+          "赤岳",
+          "美濃戸",
+          "八ヶ岳"
+        ]
+      },
+      "trailheads": [
+        "美濃戸口"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/101",
+        "model_courses": [
+          {
+            "title": "南沢-赤岳-地蔵ノ頭-赤岳鉱泉-北沢 周回コース",
+            "url": "https://yamap.com/model-courses/32733"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "搭夜行巴士清晨抵美濃戸口→美濃戸→南沢→行者小屋→文三郎尾根登赤岳→赤岳天望荘（泊，稜線看日出）；Day2 地蔵尾根下行者小屋→赤岳鉱泉→北沢下美濃戸口",
+          "recommended_hut": "赤岳天望荘"
+        },
+        {
+          "days": "1泊2日",
+          "plan": "美濃戸口→北沢→赤岳鉱泉（泊）；Day2 行者小屋→文三郎尾根→赤岳往返→地蔵尾根→行者小屋→南沢下山（適合想住溫暖山屋者）",
+          "recommended_hut": "赤岳鉱泉"
+        }
+      ],
+      "huts": [
+        {
+          "name": "赤岳天望荘",
+          "elevation": 2722,
+          "note": "位於赤岳山頂北側稜線（地蔵ノ頭附近），距山頂約30分，看日出與稜線展望絕佳；自助餐與個室頗受歡迎",
+          "booking_url": "http://www.yatsugatake.gr.jp/",
+          "phone": "0266-74-2728"
+        },
+        {
+          "name": "赤岳鉱泉",
+          "elevation": 2220,
+          "note": "北沢側據點，以豐盛晚餐（常有牛排）與冬季人工冰場（アイスキャンディ）聞名，全年營業",
+          "booking_url": "https://www.akadakekousen.jp/"
+        },
+        {
+          "name": "行者小屋",
+          "elevation": 2350,
+          "note": "位於文三郎尾根與地蔵尾根登山口，是赤岳周邊行程的中繼與紮營地，夏季營業（約6月～11月上旬）",
+          "booking_url": "https://www.akadakekousen.jp/"
+        }
+      ]
+    },
+    {
+      "id": "kaikomagatake",
+      "name_ja": "甲斐駒ヶ岳",
+      "aliases": [
+        "甲斐駒ヶ岳",
+        "甲斐駒ケ岳",
+        "かいこまがたけ",
+        "カイコマガタケ",
+        "甲斐駒",
+        "東駒ヶ岳",
+        "東駒ケ岳",
+        "Kaikomagatake",
+        "Kaikoma"
+      ],
+      "elevation": 2967,
+      "lat": 35.7578,
+      "lon": 138.2367,
+      "difficulty": "中級",
+      "area_hint": "南アルプス北端の名峰（經北沢峠／戸台口，走仙水峠→駒津峰路線，非黒戸尾根）",
+      "maitabi": {
+        "area_names": [
+          "仙丈・甲斐駒（戸台口）"
+        ],
+        "title_keywords": [
+          "甲斐駒",
+          "北沢峠",
+          "戸台"
+        ]
+      },
+      "trailheads": [
+        "北沢峠（戸台口）"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/62",
+        "model_courses": [
+          {
+            "title": "北沢峠-仙水峠-甲斐駒ケ岳-双児山 周回コース",
+            "url": "https://yamap.com/model-courses/93"
+          },
+          {
+            "title": "【周回】甲斐駒ヶ岳（北沢峠）＜仙水峠・双児山＞",
+            "url": "https://yamap.com/model-courses/20530"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "搭夜行巴士至戸台口，轉南アルプス林道巴士入北沢峠→こもれび山荘（泊）；Day2 仙水峠→駒津峰→甲斐駒ヶ岳往返，經双児山周回下北沢峠搭巴士",
+          "recommended_hut": "こもれび山荘"
+        },
+        {
+          "days": "1泊2日",
+          "plan": "北沢峠→仙水小屋（泊，距仙水峠近）；Day2 仙水峠→駒津峰→甲斐駒ヶ岳→双児山→北沢峠（清晨早出避午後雷雨）",
+          "recommended_hut": "仙水小屋"
+        }
+      ],
+      "huts": [
+        {
+          "name": "こもれび山荘",
+          "elevation": 2036,
+          "note": "北沢峠上（舊名長衛荘），甲斐駒ヶ岳與仙丈ヶ岳的登山基地，由伊那市觀光經營；完全預約制，透過「やまたん」網路預約",
+          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/kitazawa/",
+          "phone": "050-1722-3710"
+        },
+        {
+          "name": "仙水小屋",
+          "elevation": 2130,
+          "note": "位於仙水峠下方，收容約20人的小型山屋，完全預約制，以清晨早出攻頂方便著稱",
+          "booking_url": "https://www.minamialps-net.jp/yamagoya/021_sensui",
+          "phone": "080-5076-5494"
+        }
+      ]
+    },
+    {
+      "id": "senjogatake",
+      "name_ja": "仙丈ヶ岳",
+      "aliases": [
+        "仙丈ヶ岳",
+        "仙丈ケ岳",
+        "仙丈岳",
+        "せんじょうがたけ",
+        "センジョウガタケ",
+        "仙丈",
+        "南アルプスの女王",
+        "Senjogatake",
+        "Senjo"
+      ],
+      "elevation": 3033,
+      "lat": 35.72,
+      "lon": 138.1836,
+      "difficulty": "中級",
+      "area_hint": "南アルプス（戸台口・北沢峠起點，三段冰斗地形「南阿爾卑斯的女王」）",
+      "maitabi": {
+        "area_names": [
+          "仙丈・甲斐駒（戸台口）"
+        ],
+        "title_keywords": [
+          "仙丈",
+          "北沢峠",
+          "戸台"
+        ]
+      },
+      "trailheads": [
+        "北沢峠（戸台口）"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/15",
+        "model_courses": [
+          {
+            "title": "北沢峠-仙丈ヶ岳 周回コース",
+            "url": "https://yamap.com/model-courses/46"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日",
+          "plan": "Day1 夜行巴士清晨抵戸台→南阿爾卑斯林道巴士至北沢峠→大滝ノ頭→小仙丈ヶ岳→仙丈ヶ岳→仙丈小屋（泊）；Day2 藪沢カール經馬の背ヒュッテ下山回北沢峠",
+          "recommended_hut": "仙丈小屋"
+        },
+        {
+          "days": "夜行日帰り",
+          "plan": "夜行巴士→戸台→林道巴士至北沢峠→小仙丈尾根往返仙丈ヶ岳（約7小時）→北沢峠搭末班林道巴士下山",
+          "recommended_hut": "こもれび山荘"
+        }
+      ],
+      "huts": [
+        {
+          "name": "北沢峠こもれび山荘",
+          "elevation": 2044,
+          "note": "位於北沢峠登山基地，仙丈與甲斐駒共用據點；完全預約制，透過 Yamatan 線上預約，不接受電話預約",
+          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/kitazawa/",
+          "phone": "080-8760-4367"
+        },
+        {
+          "name": "仙丈小屋",
+          "elevation": 2884,
+          "note": "位於藪沢冰斗上方、最接近山頂的山屋，看日出登頂方便；營業約6月中至10月中",
+          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/senjo/",
+          "phone": "090-1883-3033"
+        },
+        {
+          "name": "馬の背ヒュッテ",
+          "elevation": 2630,
+          "note": "藪沢路線上的溫馨山屋，鹿肉咖哩為招牌；適合下山繞經藪沢路線者",
+          "booking_url": "https://umanose.com/"
+        }
+      ]
+    },
+    {
+      "id": "tanigawadake",
+      "name_ja": "谷川岳",
+      "aliases": [
+        "谷川岳",
+        "たにがわだけ",
+        "タニガワダケ",
+        "谷川",
+        "トマの耳",
+        "オキの耳",
+        "谷川富士",
+        "Tanigawadake",
+        "Tanigawa"
+      ],
+      "elevation": 1977,
+      "lat": 36.8372,
+      "lon": 138.9297,
+      "difficulty": "中級",
+      "area_hint": "上越國境（谷川岳纜車天神平起點，雙耳峰：トマの耳1963m／オキの耳1977m，以最高點オキの耳計）",
+      "maitabi": {
+        "area_names": [
+          "谷川岳（ロープウェイ駅）"
+        ],
+        "title_keywords": [
+          "谷川岳",
+          "天神平",
+          "ロープウェイ"
+        ]
+      },
+      "trailheads": [
+        "天神平（谷川岳ロープウェイ）"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/164",
+        "model_courses": [
+          {
+            "title": "天神尾根コース",
+            "url": "https://yamap.com/model-courses/196"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "夜行日帰り",
+          "plan": "夜行巴士清晨抵谷川岳纜車土合口→搭纜車至天神平→天神尾根→熊穴沢避難小屋→肩の小屋→トマの耳→オキの耳往返→原路搭纜車下山（實走約5-6小時）",
+          "recommended_hut": "谷川岳肩の小屋"
+        },
+        {
+          "days": "夜行日帰り（悪天備案）",
+          "plan": "天候不佳時可於肩の小屋休息或折返；山頂稜線氣候多變、落石與遇難事故多，務必備妥雨具並提早行動",
+          "recommended_hut": "谷川岳肩の小屋"
+        }
+      ],
+      "huts": [
+        {
+          "name": "谷川岳肩の小屋",
+          "elevation": 1920,
+          "note": "位於トマの耳下方稜線的公營山屋，定員約40名為小型山屋，需預約；營業約4月下旬至11月3日，由みなかみ町管理",
+          "booking_url": "https://mmga.jp/2021/03/25/katanokoya/",
+          "phone": "090-3347-0802"
+        }
+      ]
+    },
+    {
+      "id": "hiuchigatake",
+      "name_ja": "燧ヶ岳",
+      "aliases": [
+        "燧ヶ岳",
+        "燧ケ岳",
+        "燧岳",
+        "ひうちがたけ",
+        "ヒウチガタケ",
+        "燧",
+        "柴安嵓",
+        "しばやすぐら",
+        "Hiuchigatake",
+        "Hiuchi"
+      ],
+      "elevation": 2356,
+      "lat": 36.955,
+      "lon": 139.2853,
+      "difficulty": "中級",
+      "area_hint": "尾瀬（御池起點，東北地方最高峰，最高點柴安嵓2356m，五峰火山）",
+      "maitabi": {
+        "area_names": [
+          "会津駒ヶ岳・尾瀬御池・燧ヶ岳"
+        ],
+        "title_keywords": [
+          "燧ヶ岳",
+          "御池",
+          "尾瀬"
+        ]
+      },
+      "trailheads": [
+        "御池"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/163",
+        "model_courses": [
+          {
+            "title": "御池〜山頂〜沼山峠 縦走コース",
+            "url": "https://yamap.com/model-courses/195"
+          },
+          {
+            "title": "尾瀬御池-燧ヶ岳 縦走コース",
+            "url": "https://yamap.com/model-courses/1509"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "夜行日帰り",
+          "plan": "夜行巴士清晨抵御池→廣沢田代→熊沢田代→俎嵓→柴安嵓→原路往返回御池（約6.5小時）",
+          "recommended_hut": "尾瀬御池ロッジ"
+        },
+        {
+          "days": "1泊2日",
+          "plan": "Day1 夜行抵御池→登燧ヶ岳（俎嵓・柴安嵓）→下尾瀬沼、宿長蔵小屋（泊）；Day2 尾瀬沼、沼山峠周遊或原路返回",
+          "recommended_hut": "長蔵小屋"
+        }
+      ],
+      "huts": [
+        {
+          "name": "尾瀬御池ロッジ",
+          "elevation": 1500,
+          "note": "御池登山口旁的村營住宿，夜行抵達後整裝登山的據點；營業約5月下旬至10月下旬，需預約",
+          "booking_url": "https://www.oze-info.jp/ozh_stay/miikelodge/",
+          "phone": "080-2844-8873"
+        },
+        {
+          "name": "長蔵小屋",
+          "elevation": 1665,
+          "note": "尾瀬沼畔歷史悠久的山屋，適合縱走下山後留宿；2026年第二長蔵小屋整修休館，本館照常營業",
+          "booking_url": "https://chozogoya.com/",
+          "phone": "050-1725-7100"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "yama",
+  "description": "日本登山規劃助手：查毎日あるぺん号夜行巴士（含直達預約連結）、山屋住宿、Yamap 路線圖、山頂 16 天天氣與登山適宜度",
+  "version": "0.1.0",
+  "author": {
+    "name": "randy-tsukemen"
+  },
+  "repository": "https://github.com/randy-tsukemen/hiking",
+  "license": "MIT",
+  "keywords": ["hiking", "japan", "mountain", "bus", "weather"]
+}
