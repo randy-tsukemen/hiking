@@ -170,6 +170,10 @@ yama watch run                         # 檢查一輪（給 cron 呼叫）
 
 ```sh
 uv run pytest        # 單元測試
+uv run yama doctor   # 資料來源健檢（maitabi/天氣/Yamap/預約系統/山屋連結）
 ```
+
+本專案依賴四個會改版的外部來源；GitHub Actions 每週一自動跑 `doctor`，
+來源改版導致功能靜默壞掉時會收到 Actions 失敗通知。
 
 新增山岳：編輯 `src/yama/data/mountains.json`，欄位格式參考現有條目（`maitabi.area_names` 需對應 API 的 district 名稱子字串，`lat/lon` 為山頂座標）。

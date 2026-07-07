@@ -1,0 +1,18 @@
+name: weekly-smoke
+
+on:
+  schedule:
+    - cron: "0 22 * * 0"   # 每週一 07:00 JST（UTC 週日 22:00）
+  workflow_dispatch: {}
+
+jobs:
+  doctor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Unit tests
+        run: uv run pytest -q
+      - name: Data source health check
+        run: uv run yama doctor

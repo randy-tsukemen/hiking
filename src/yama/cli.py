@@ -180,6 +180,22 @@ def watch_run(
         console.print(f"・{line}")
 
 
+@app.command("doctor")
+def doctor() -> None:
+    """健檢所有外部資料來源（maitabi/天氣/Yamap/預約系統/山屋連結）。"""
+    from .doctor import run_doctor
+
+    with console.status("對各資料來源做真實查詢健檢中（約 30 秒）…"):
+        results, all_ok = run_doctor()
+    for r in results:
+        mark = "[green]✅[/green]" if r.ok else "[red]❌[/red]"
+        console.print(f"{mark} {r.name}：{r.detail}")
+    if not all_ok:
+        console.print("[red]有項目失敗——對應功能可能已靜默壞掉，請檢查來源是否改版[/red]")
+        raise typer.Exit(1)
+    console.print("[green]全部通過[/green]")
+
+
 @app.command("rooms")
 def rooms(
     course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
