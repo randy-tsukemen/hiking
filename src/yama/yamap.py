@@ -47,6 +47,25 @@ class ModelRoute:
         return f"{h}:{m:02d}"
 
     @property
+    def schedule_label(self) -> str:
+        """Yamap 的 stays 是「日程天數」：1=日帰り、2=1泊2日、3=2泊3日…"""
+        if self.stays <= 1:
+            return "日帰り"
+        return f"{self.stays - 1}泊{self.stays}日"
+
+    @property
+    def fitness_label(self) -> str:
+        """体力度（1〜10）的實務意義。"""
+        f = self.fitness_level
+        if f is None:
+            return ""
+        if f <= 3:
+            return "適合日帰り"
+        if f <= 5:
+            return "建議住1晚以上"
+        return "多日縱走體力"
+
+    @property
     def constant_label(self) -> str:
         c = self.course_constant
         if c is None:

@@ -25,3 +25,16 @@ def test_constant_labels():
     assert _route(course_constant=65).constant_label == "吃力"
     assert _route(course_constant=88).constant_label == "極吃力"
     assert _route(course_constant=None).constant_label == ""
+
+
+def test_schedule_label():
+    assert _route(stays=1).schedule_label == "日帰り"
+    assert _route(stays=2).schedule_label == "1泊2日"
+    assert _route(stays=4).schedule_label == "3泊4日"
+
+
+def test_fitness_label():
+    assert _route(fitness_level=2).fitness_label == "適合日帰り"
+    assert _route(fitness_level=5).fitness_label == "建議住1晚以上"
+    assert _route(fitness_level=7).fitness_label == "多日縱走體力"
+    assert _route(fitness_level=None).fitness_label == ""
