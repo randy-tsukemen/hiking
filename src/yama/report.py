@@ -144,7 +144,11 @@ def fetch_bus_data(
         for t in client.list_courses(month, aid, sample_days):
             courses.setdefault(t.course_cd, t)
     tours = list(courses.values())
-    matched = filter_by_keywords(tours, mountain.maitabi_title_keywords)
+    # 過濾關鍵字含資料庫山屋名——套裝方案標題常只有山屋名（雷鳥荘1泊〈往復〉）
+    keywords = mountain.maitabi_title_keywords + [
+        h["name"] for h in mountain.huts
+    ]
+    matched = filter_by_keywords(tours, keywords)
     if matched:
         tours = matched
 

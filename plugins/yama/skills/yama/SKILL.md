@@ -32,6 +32,7 @@ uvx --from git+https://github.com/randy-tsukemen/hiking yama <指令>
 ... yama <山名> --month 8 --out <檔案>   # 指定巴士查詢月份
 ... yama weekend --out <檔案>     # 這週末適合去哪些山（排名+巴士可預約標記）
 ... yama best --days 14 --out <檔案>     # 未來 N 天最佳登山日排名
+... yama go <山名> [--when weekend|best|日期] [--party N]  # 一鍵成案：驗證天氣→巴士→房間，直接給唯一建議
 ... yama rooms <course_no> <日期>    # 查套裝方案的山屋「房間」空位（巴士有位≠房間有位）
 ```
 
@@ -42,6 +43,9 @@ uvx --from git+https://github.com/randy-tsukemen/hiking yama <指令>
 
 ## 回答時的原則
 
+0. 使用者表達「想去爬 X」且沒有特別要研究比較時，**優先用 `yama go`**——
+   它會做完天氣→巴士→房間的全部驗證並給出唯一建議，直接轉述結果即可；
+   使用者想看選項或比較時才用完整報告。
 1. **不要把整份報告貼給使用者**——依對話需求挑重點：
    - 問「什麼時候去好」→ 看天氣表，挑適宜度 ◎/○ 的日子（優先週末），
      並確認該日前一晚有可預約的往路巴士。

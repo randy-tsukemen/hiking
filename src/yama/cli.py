@@ -92,6 +92,27 @@ def best(
     _output(md, out)
 
 
+@app.command("go")
+def go(
+    mountain: str = typer.Argument(..., help="山名"),
+    when: str = typer.Option("weekend", "--when", "-w",
+                             help="weekend / best / YYYY-MM-DD"),
+    party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="人數"),
+) -> None:
+    """一鍵成案：驗證天氣→巴士→房間後給出唯一建議（不用自己比較）。"""
+    from .planner import plan_trip, render_plan
+
+    db = MountainDB.load()
+    m = db.find(mountain)
+    if m is None:
+        console.print(f"[red]找不到「{mountain}」。[/red]")
+        raise typer.Exit(1)
+    with console.status(f"為 {m.name} 成案中（天氣→巴士→房間逐項驗證）…"):
+        with MaitabiClient() as client:
+            plan = plan_trip(m, client, when=when, party=party)
+    print(render_plan(plan))
+
+
 @app.command("rooms")
 def rooms(
     course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
@@ -138,7 +159,7 @@ def plan(
     _output(md, out)
 
 
-_COMMANDS = {"list", "weekend", "best", "plan", "rooms"}
+_COMMANDS = {"list", "weekend", "best", "plan", "rooms", "go", "watch", "doctor"}
 
 
 def run() -> None:
