@@ -78,6 +78,7 @@ uv run yama best --days 14      # 未來 14 天內每座山的最佳登山日排
 uv run yama go 立山             # 一鍵成案：驗證天氣→巴士→房間，給唯一建議＋預約連結
 uv run yama go 燕岳 --when best --party 2   # 14 天內最佳窗口、2 人
 uv run yama rooms 8574 2026-07-10   # 查套裝方案的山屋「房間」空位（見下方說明）
+uv run yama watch room 8574 2026-07-10  # 監控空房釋出，變化時通知（見下方說明）
 uv run yama list                # 列出收錄的山岳
 ```
 
@@ -108,6 +109,26 @@ $ uv run yama rooms 8574 2026-07-10
   `WT` 候補（キャンセル待ち）、`×` 已滿
 - 原理：模擬預約流程的前兩步（選房數/人數 → 宿泊先確認頁）並解析空位表，
   **不會建立任何預約**；多房型方案會自動挑最低人數需求的房型探測
+
+## 監控通知（`yama watch`）— 幫你盯著空房和天氣窗
+
+滿房會釋出（取消費生效前是退訂高峰）、天氣窗稍縱即逝——這種時效性資訊交給排程盯：
+
+```sh
+yama watch room 8574 2026-07-10        # 監控套裝房間：×→○/RQ 釋出時通知
+yama watch weather 立山 --score 75 --days 2   # 出現連 2 天◎的窗口時通知
+yama watch list / remove <id>          # 管理監控項
+yama watch run                         # 檢查一輪（給 cron 呼叫）
+```
+
+狀態變好時通知（只通知一次）：stdout＋macOS 通知中心＋可選 LINE push
+（設 `LINE_CHANNEL_ACCESS_TOKEN` 與 `LINE_USER_ID` 環境變數；注意每月 200 則免費額度）。
+
+排程範例（每小時檢查）：`crontab -e` 加入
+
+```
+0 * * * * cd /path/to/hiking && /opt/homebrew/bin/uv run yama watch run
+```
 
 ## 報告內容
 

@@ -113,6 +113,73 @@ def go(
     print(render_plan(plan))
 
 
+watch_app = typer.Typer(help="監控空房與天氣窗，變化時通知（配合 cron 定期執行）")
+app.add_typer(watch_app, name="watch")
+
+
+@watch_app.command("room")
+def watch_room(
+    course_no: int = typer.Argument(..., help="方案編號"),
+    depart: str = typer.Argument(..., help="出發日 YYYY-MM-DD"),
+    party: int = typer.Option(1, "--party", "-p", min=1, max=8),
+) -> None:
+    """監控套裝方案的房間：滿房釋出（×→○/RQ/WT）時通知。"""
+    from .watch import add_room_watch, describe
+
+    w = add_room_watch(course_no, depart, party)
+    console.print(f"已加入監控：{describe(w)}")
+    console.print("用 `yama watch run` 檢查；排程請見 `yama watch run --help`")
+
+
+@watch_app.command("weather")
+def watch_weather(
+    mountain: str = typer.Argument(..., help="山名"),
+    score: int = typer.Option(75, "--score", help="適宜度門檻（75=◎、55=○）"),
+    days: int = typer.Option(1, "--days", help="需要連續幾天"),
+) -> None:
+    """監控天氣窗：出現連續 N 天 ≥ 門檻的日子時通知。"""
+    from .watch import add_weather_watch, describe
+
+    w = add_weather_watch(mountain, score, days)
+    console.print(f"已加入監控：{describe(w)}")
+
+
+@watch_app.command("list")
+def watch_list() -> None:
+    """列出監控項。"""
+    from .watch import describe, list_watches
+
+    ws = list_watches()
+    if not ws:
+        console.print("（沒有監控項）")
+    for w in ws:
+        console.print(f"{describe(w)}｜上次狀態：{w.last_state or '—'}")
+
+
+@watch_app.command("remove")
+def watch_remove(watch_id: int = typer.Argument(...)) -> None:
+    """移除監控項。"""
+    from .watch import remove_watch
+
+    console.print("已移除" if remove_watch(watch_id) else "找不到該編號")
+
+
+@watch_app.command("run")
+def watch_run(
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="連未變化的也印出"),
+) -> None:
+    """檢查所有監控項，狀態好轉時通知（stdout＋macOS 通知＋可選 LINE push）。
+
+    排程範例（每小時）：
+      crontab -e 加入：
+      0 * * * * cd /path/to/hiking && /opt/homebrew/bin/uv run yama watch run
+    """
+    from .watch import run_checks
+
+    for line in run_checks(notify_unchanged=verbose):
+        console.print(f"・{line}")
+
+
 @app.command("rooms")
 def rooms(
     course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
