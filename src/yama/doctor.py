@@ -104,11 +104,14 @@ def _check_travelanswer() -> list[CheckResult]:
 
 
 def _check_hut_links(sample: int = 6) -> list[CheckResult]:
+    """抽查山屋連結。只有 HTTP 4xx/5xx（403 除外，多為擋爬蟲）視為死鏈；
+    連線失敗/逾時常是日本地方網站對海外 IP 的地域封鎖（CI 在美國），
+    列為警告但不判失敗。"""
     from .matcher import MountainDB
 
     huts = [h for m in MountainDB.load().mountains for h in m.huts]
     random.shuffle(huts)
-    dead = []
+    dead, unreachable = [], []
     for h in huts[:sample]:
         try:
             r = httpx.head(h["booking_url"], follow_redirects=True, timeout=10,
@@ -116,13 +119,17 @@ def _check_hut_links(sample: int = 6) -> list[CheckResult]:
             if r.status_code in (403, 405):
                 r = httpx.get(h["booking_url"], follow_redirects=True, timeout=10,
                               headers={"User-Agent": "Mozilla/5.0"})
-            if r.status_code >= 400:
+            if r.status_code >= 400 and r.status_code != 403:
                 dead.append(f"{h['name']}({r.status_code})")
         except httpx.HTTPError:
-            dead.append(f"{h['name']}(連線失敗)")
-    return [CheckResult(
-        f"山屋連結抽查（{sample} 家）", not dead,
-        "全部存活" if not dead else "失效：" + "、".join(dead))]
+            unreachable.append(h["name"])
+    detail = "全部存活" if not (dead or unreachable) else ""
+    if dead:
+        detail += "失效：" + "、".join(dead)
+    if unreachable:
+        detail += ("；" if detail else "") + \
+            "⚠️ 連線失敗（疑似地域封鎖，非死鏈）：" + "、".join(unreachable)
+    return [CheckResult(f"山屋連結抽查（{sample} 家）", not dead, detail)]
 
 
 def run_doctor() -> tuple[list[CheckResult], bool]:
