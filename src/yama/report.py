@@ -8,7 +8,7 @@ from datetime import date, timedelta
 from .maitabi import MaitabiClient, Tour, TourDetail, filter_by_keywords
 from .matcher import Mountain, MountainDB
 from .weather import DayForecast, get_forecast, get_forecasts, rate_day
-from .yamap import fetch_model_routes
+from .yamap import fetch_all_routes
 
 _WEEKDAY = "一二三四五六日"
 
@@ -202,7 +202,7 @@ def build_mountain_report(
         lines.append("")
 
     # 3.5 Yamap 模範路線（距離、爬升、コース定数＝客觀難度數值）
-    routes = fetch_model_routes(m.yamap.get("mountain_url", "")) if m.yamap else []
+    routes = fetch_all_routes(m.yamap) if m.yamap else []
     if routes:
         lines += [
             "## 路線資料（Yamap 模範路線）",
@@ -210,7 +210,7 @@ def build_mountain_report(
             "| 路線 | 距離 | 爬升 | 下降 | 標準時間 | コース定数 | 体力度 | 日程 |",
             "|---|---|---|---|---|---|---|---|",
         ]
-        for r in routes[:8]:
+        for r in routes[:10]:
             cc = f"{r.course_constant}（{r.constant_label}）" if r.course_constant else "—"
             fl = f"{r.fitness_level}/10" if r.fitness_level else "—"
             lines.append(

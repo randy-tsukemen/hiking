@@ -1064,7 +1064,10 @@
       ],
       "yamap": {
         "mountain_url": "https://yamap.com/mountains/14",
-        "model_courses": []
+        "model_courses": [],
+        "extra_course_ids": [
+          26242
+        ]
       },
       "itineraries": [
         {

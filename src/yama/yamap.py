@@ -81,6 +81,46 @@ class ModelRoute:
         return "極吃力"
 
 
+def fetch_route_page(course_id: int, timeout: float = 20.0) -> ModelRoute | None:
+    """抓取單一模範路線頁（yamap.com/model-courses/{id}，Nuxt SSR）。
+
+    用於山岳頁沒收錄、但想額外顯示的路線（資料庫 yamap.extra_course_ids）。
+    頁面沒有体力度與日程欄位，該兩項回傳 None／預設。
+    """
+    try:
+        resp = httpx.get(
+            f"https://yamap.com/model-courses/{course_id}",
+            headers=_UA, timeout=timeout, follow_redirects=True,
+        )
+        resp.raise_for_status()
+    except httpx.HTTPError:
+        return None
+    title_m = re.search(r"<title>([^<|]+?)の地図", resp.text)
+    plain = re.sub(r"<[^>]+>", "|", resp.text)
+    plain = re.sub(r"(\||\s)+", "|", plain)
+    # 版面：コース定数|標準タイム|HH:MM|で算出|<等級>|<定数>|HH:MM|<距離>|km|<のぼり>|m
+    cc_m = re.search(r"コース定数\|[^|]*\|[\d:]+\|[^|]*\|[^|]*\|(\d+)\|", plain)
+    dist_m = re.search(r"距離\|([\d.]+)\|km\|のぼり\|(\d+)\|m\|くだり\|(\d+)\|m", plain)
+    time_m = re.search(r"タイム\|(\d+):(\d+)", plain)
+    if not dist_m:
+        return None
+    time_sec = 0
+    if time_m:
+        time_sec = int(time_m.group(1)) * 3600 + int(time_m.group(2)) * 60
+    return ModelRoute(
+        id=course_id,
+        name=title_m.group(1).strip() if title_m else f"model-course {course_id}",
+        distance_m=int(float(dist_m.group(1)) * 1000),
+        up_m=int(dist_m.group(2)),
+        down_m=int(dist_m.group(3)),
+        time_sec=time_sec,
+        course_constant=int(cc_m.group(1)) if cc_m else None,
+        fitness_level=None,
+        difficulty_level=None,
+        stays=1,
+    )
+
+
 def fetch_model_routes(mountain_url: str, timeout: float = 20.0) -> list[ModelRoute]:
     """從 Yamap 山岳頁抓取模範路線清單（依コース定数升冪）。失敗回傳空列表。"""
     try:
@@ -131,3 +171,17 @@ def fetch_model_routes(mountain_url: str, timeout: float = 20.0) -> list[ModelRo
         if r.distance_m > 0:
             routes.setdefault(r.id, r)
     return sorted(routes.values(), key=lambda r: (r.course_constant or 999))
+
+
+def fetch_all_routes(yamap_info: dict, timeout: float = 20.0) -> list[ModelRoute]:
+    """山岳頁路線 + 資料庫指定的額外路線（extra_course_ids），去重並依定数排序。"""
+    routes = fetch_model_routes(yamap_info.get("mountain_url", ""), timeout)
+    seen = {r.id for r in routes}
+    for cid in yamap_info.get("extra_course_ids", []):
+        if cid in seen:
+            continue
+        r = fetch_route_page(cid, timeout)
+        if r:
+            routes.append(r)
+            seen.add(cid)
+    return sorted(routes, key=lambda r: (r.course_constant or 999))
