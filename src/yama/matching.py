@@ -47,12 +47,14 @@ def route_tier(r: ModelRoute) -> str:
     return "日帰り"
 
 
-# 各路線層級適用的方案分類（依序＝推薦順）
-TIER_TO_CATEGORIES: dict[str, list[str]] = {
-    "輕鬆日帰り": ["夜行日帰り往復", "純巴士往復"],
-    "日帰り": ["夜行日帰り往復", "純巴士往復"],
-    "1泊2日": ["山小屋セット", "純巴士往復"],
-    "多日縱走": ["異口縱走用", "山小屋セット", "純巴士往復"],
+# 各路線層級適用的方案分類與各分類上限（依序＝推薦順）。
+# 含住宿的層級（1泊2日/多日縱走）保證山小屋セット出現——
+# 一次訂齊巴士＋房間、還能用 yama rooms 實查空位。
+TIER_TO_CATEGORIES: dict[str, list[tuple[str, int]]] = {
+    "輕鬆日帰り": [("夜行日帰り往復", 2), ("純巴士往復", 1)],
+    "日帰り": [("夜行日帰り往復", 2), ("純巴士往復", 1)],
+    "1泊2日": [("山小屋セット", 2), ("純巴士往復", 1)],
+    "多日縱走": [("異口縱走用", 2), ("山小屋セット", 1), ("純巴士往復", 1)],
 }
 
 
@@ -71,6 +73,10 @@ def match_routes_to_plans(
     categorized: dict[str, list[Tour]] = {}
     for t in bus.roundtrip:
         categorized.setdefault(plan_category(t, mountain), []).append(t)
+    # 異口方案裡「含山屋」的排前面（縱走通常要住，含住宿優先）
+    if "異口縱走用" in categorized:
+        categorized["異口縱走用"].sort(
+            key=lambda t: (not _HUT_HINT.search(t.title), _price(t)))
 
     out: list[TierMatch] = []
     for tier in ("輕鬆日帰り", "日帰り", "1泊2日", "多日縱走"):
@@ -78,13 +84,18 @@ def match_routes_to_plans(
         if not tier_routes:
             continue
         m = TierMatch(tier=tier, routes=tier_routes)
-        for cat in TIER_TO_CATEGORIES[tier]:
-            for t in categorized.get(cat, []):
-                if len(m.plans) >= plans_per_tier:
+        for cat, cap in TIER_TO_CATEGORIES[tier]:
+            for t in categorized.get(cat, [])[:cap]:
+                if len(m.plans) >= plans_per_tier + 1:
                     break
                 m.plans.append((cat, t))
         out.append(m)
     return out
+
+
+def _price(t: Tour) -> int:
+    digits = "".join(c for c in t.price if c.isdigit())
+    return int(digits) if digits else 10**9
 
 
 def exit_stop(t: Tour) -> str | None:

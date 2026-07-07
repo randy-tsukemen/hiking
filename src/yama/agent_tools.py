@@ -181,7 +181,12 @@ def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
         "month": month,
         "note": "去程/來回為夜行巴士：晚上出發、翌日清晨抵達登山口。天氣適宜度對應實際登山日。",
         "outbound": pack(bus.outbound, night_bus=True),
-        "roundtrip_with_hut_packages": pack(bus.roundtrip, night_bus=True),
+        # 含住宿路線優先展示山小屋セット：取最便宜套裝＋最便宜純巴士各一
+        "roundtrip_with_hut_packages": pack(
+            sorted(bus.roundtrip,
+                   key=lambda t: (plan_category(t, m) != "山小屋セット",))[:1]
+            + [t for t in bus.roundtrip if plan_category(t, m) != "山小屋セット"][:1],
+            night_bus=True),
         "inbound": pack(bus.inbound, night_bus=False),
     }
 
