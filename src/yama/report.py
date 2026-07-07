@@ -56,12 +56,16 @@ def _slot_line(
     grades: dict[date, str],
     today: date,
     grade_offset: int = 0,
+    month: int | None = None,
 ) -> str:
-    """grade_offset：夜行往路的登山日是出發日+1，天氣標記需對應登山日。"""
+    """grade_offset：夜行往路的登山日是出發日+1，天氣標記需對應登山日。
+    month：指定月份時只列該月出發日（提前預約場景，避免被近期日期擠掉）。"""
     parts = []
     for slot in detail.reserves:
         d = slot.depart_date
         if d is None or d < today:
+            continue
+        if month is not None and d.month != month:
             continue
         grade = grades.get(d + timedelta(days=grade_offset), "")
         grade_s = f" {grade}" if grade else ""
@@ -78,6 +82,7 @@ def _course_section(
     grades: dict[date, str],
     today: date,
     grade_offset: int = 0,
+    month: int | None = None,
 ) -> list[str]:
     if not tours:
         return []
@@ -86,7 +91,7 @@ def _course_section(
         d = details.get(t.course_no)
         lines.append(f"- **{t.title}** — {t.price}")
         if d:
-            lines.append(f"  - 出發日：{_slot_line(d, grades, today, grade_offset)}")
+            lines.append(f"  - 出發日：{_slot_line(d, grades, today, grade_offset, month)}")
             lines.append(f"  - [方案詳細]({d.detail_url})")
         else:
             lines.append(
@@ -238,14 +243,21 @@ def build_mountain_report(
         lines += [f"{month} 月查無「{'、'.join(m.maitabi_area_names)}」方面的巴士方案。", ""]
     else:
         # 往路/往復為夜行：出發日晚上上車、隔天清晨開始爬，天氣標記對應出發日+1
+        # 指定非當月時，出發日只列該月（提前預約場景）
+        month_filter = month if month != today.month else None
         lines += _course_section(
-            "去程（往路）", bus.outbound, bus.details, grades, today, grade_offset=1
+            "去程（往路）", bus.outbound, bus.details, grades, today,
+            grade_offset=1, month=month_filter,
         )
         lines += _course_section(
             "來回・套裝（往復，多含山屋住宿）",
-            bus.roundtrip, bus.details, grades, today, grade_offset=1,
+            bus.roundtrip, bus.details, grades, today,
+            grade_offset=1, month=month_filter,
         )
-        lines += _course_section("回程（復路）", bus.inbound, bus.details, grades, today)
+        lines += _course_section(
+            "回程（復路）", bus.inbound, bus.details, grades, today,
+            month=month_filter,
+        )
         lines += [
             "出發日旁的 ◎○△× 為登山日（往路=出發翌日清晨抵達）的山頂天氣適宜度（僅 16 天內有資料）。",
             "點狀態文字（受付中等）可直接進入預約流程。"
