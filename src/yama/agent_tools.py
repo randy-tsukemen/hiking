@@ -141,6 +141,8 @@ def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
             "message": f"{month} 月查無「{'、'.join(m.maitabi_area_names)}」方面的巴士方案",
         }
 
+    from .matching import plan_category
+
     def pack(tours, night_bus: bool) -> list[dict[str, Any]]:
         out = []
         for t in tours[:2]:
@@ -166,6 +168,7 @@ def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
             out.append(
                 {
                     "title": t.title,
+                    "category": plan_category(t, m),
                     "price": t.price,
                     "detail_url": f"https://bus.maitabi.jp/detail.html?course_no={t.course_no}",
                     "departures": slots,
