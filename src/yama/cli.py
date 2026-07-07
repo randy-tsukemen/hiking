@@ -199,11 +199,25 @@ def doctor() -> None:
 @app.command("rooms")
 def rooms(
     course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
-    date: str = typer.Argument(..., help="出發日 YYYY-MM-DD"),
+    date: str = typer.Argument(..., help="出發日 YYYY-MM-DD，或 YYYY-MM 掃描整月週末"),
 ) -> None:
-    """查詢套裝方案某出發日的逐晚住宿空位（巴士有位≠房間有位）。"""
-    from .travelanswer import check_room_availability
+    """查詢套裝方案的住宿空位（巴士有位≠房間有位）。給月份則掃描該月全部週末。"""
+    from .travelanswer import check_room_availability, sweep_weekend_rooms
 
+    if len(date) == 7:  # YYYY-MM → 週末掃描
+        y, mo = int(date[:4]), int(date[5:7])
+        with console.status(f"掃描 {mo} 月週末房間空位中（約 30 秒）…"):
+            results = sweep_weekend_rooms(course_no, y, mo)
+        if not results:
+            console.print("[red]該月無可查詢的週末出發日[/red]")
+            raise typer.Exit(1)
+        console.print(f"[bold]{results[0].title}[/bold]")
+        for r in results:
+            hut = next((n for n in r.nights if "あるぺん号" not in n.facility), None)
+            mark = "✅" if r.all_ok else "❌"
+            wd = "一二三四五六日"[__import__("datetime").date.fromisoformat(r.depart_date.replace("/","-")).weekday()]
+            console.print(f"  {r.depart_date}({wd}) {mark} {hut.status if hut else '?'}（{hut.label if hut else ''}）")
+        return
     with console.status("查詢預約系統房間空位中…"):
         try:
             r = check_room_availability(course_no, date)

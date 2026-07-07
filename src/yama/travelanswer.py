@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from datetime import date
 
 import httpx
 
@@ -161,3 +162,26 @@ def check_room_availability(
         depart_date=depart_date,
         nights=nights,
     )
+
+
+def sweep_weekend_rooms(
+    course_no: int, year: int, month: int, adults: int = 1,
+    include_fridays: bool = False,
+) -> list[RoomAvailability]:
+    """掃描整月週末（可含週五）的房間空位。提前預約推薦前必跑——
+    巴士「受付中」不代表房間有位（雷鳥荘 2026-08 全週末滿房事件）。"""
+    import calendar
+    import time as _time
+
+    out = []
+    weekdays = (4, 5, 6) if include_fridays else (5, 6)
+    for day in range(1, calendar.monthrange(year, month)[1] + 1):
+        d = date(year, month, day)
+        if d.weekday() not in weekdays or d <= date.today():
+            continue
+        try:
+            out.append(check_room_availability(course_no, d.isoformat(), adults=adults))
+        except RuntimeError:
+            continue
+        _time.sleep(0.4)
+    return out
