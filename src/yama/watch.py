@@ -152,9 +152,26 @@ def _check_weather(w: Watch) -> tuple[str, str, bool]:
         span = "、".join(
             f"{d.month}/{d.day}({'一二三四五六日'[d.weekday()]}){g}{s}"
             for d, g, s in first)
-        sig = ",".join(d.isoformat() for win in windows for d, _, _ in win[:1])
+        sig = ",".join(sorted({win[0][0].isoformat() for win in windows}))
         return sig, f"🌤 {m.name} 出現天氣窗：{span}（可用 yama go {m.name} 成案）", True
     return "none", f"{m.name}：16 天內尚無 ≥{w.min_score} 的窗口", False
+
+
+def _with_plan(w: Watch, desc: str) -> str:
+    """天氣窗出現時自動成案，通知直接附方案與預約連結。"""
+    try:
+        from .maitabi import MaitabiClient
+        from .matcher import MountainDB
+        from .planner import plan_trip, render_plan
+
+        m = MountainDB.load().find(w.mountain)
+        if m is None:
+            return desc
+        with MaitabiClient() as client:
+            p = plan_trip(m, client, when="best")
+        return desc + "\n\n" + render_plan(p)
+    except Exception as e:  # 成案失敗不影響通知本身
+        return desc + f"\n（自動成案失敗：{e}）"
 
 
 def _notify(title: str, message: str) -> None:
@@ -203,6 +220,8 @@ def run_checks(notify_unchanged: bool = False) -> list[str]:
             continue
         improved = good and sig != w.last_state
         if improved:
+            if w.type == "weather":
+                desc = _with_plan(w, desc)
             _notify("yama 監控", desc)
         elif notify_unchanged:
             print(desc)
