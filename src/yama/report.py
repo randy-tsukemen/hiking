@@ -8,6 +8,7 @@ from datetime import date, timedelta
 from .maitabi import MaitabiClient, Tour, TourDetail, filter_by_keywords
 from .matcher import Mountain, MountainDB
 from .weather import DayForecast, get_forecast, get_forecasts, rate_day
+from .yamap import fetch_model_routes
 
 _WEEKDAY = "一二三四五六日"
 
@@ -200,6 +201,29 @@ def build_mountain_report(
             lines.append(f"- **{it['days']}**{hut}：{it['plan']}")
         lines.append("")
 
+    # 3.5 Yamap 模範路線（距離、爬升、コース定数＝客觀難度數值）
+    routes = fetch_model_routes(m.yamap.get("mountain_url", "")) if m.yamap else []
+    if routes:
+        lines += [
+            "## 路線資料（Yamap 模範路線）",
+            "",
+            "| 路線 | 距離 | 爬升 | 下降 | 標準時間 | コース定数 | 体力度 | 泊数 |",
+            "|---|---|---|---|---|---|---|---|",
+        ]
+        for r in routes[:8]:
+            cc = f"{r.course_constant}（{r.constant_label}）" if r.course_constant else "—"
+            fl = f"{r.fitness_level}/10" if r.fitness_level else "—"
+            lines.append(
+                f"| [{r.name}]({r.url}) | {r.distance_km}km | ↑{r.up_m}m | ↓{r.down_m}m "
+                f"| {r.time_hm} | {cc} | {fl} | {r.stays or '日帰り'} |"
+            )
+        lines += [
+            "",
+            "コース定数＝體力負荷指標：〜19 輕鬆、20〜39 一般、40〜59 健腳、"
+            "60〜79 吃力、80〜 極吃力（標準時間不含休息）。",
+            "",
+        ]
+
     # 4. 巴士方案
     lines += [f"## 毎日あるぺん号 巴士方案（東京發，{month} 月）", ""]
     bus = fetch_bus_data(m, client, month, today)
@@ -242,15 +266,15 @@ def build_mountain_report(
             "",
         ]
 
-    # 6. Yamap
+    # 6. Yamap（各路線連結已列在上方「路線資料」表）
     ym = m.yamap
-    if ym:
-        lines += ["## Yamap 路線圖", ""]
-        if ym.get("mountain_url"):
-            lines.append(f"- [山岳頁面（路線、活動日記、即時狀況）]({ym['mountain_url']})")
-        for mc in ym.get("model_courses", []):
-            lines.append(f"- [{mc['title']}]({mc['url']})")
-        lines.append("")
+    if ym and ym.get("mountain_url"):
+        lines += [
+            "## Yamap 路線圖",
+            "",
+            f"- [山岳頁面（路線、活動日記、即時狀況）]({ym['mountain_url']})",
+            "",
+        ]
 
     lines.append(f"---\n報告產生：{today.isoformat()}（天氣與巴士資料為即時查詢）")
     return "\n".join(lines)
