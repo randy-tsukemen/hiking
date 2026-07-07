@@ -1033,6 +1033,72 @@
           "phone": "050-1725-7100"
         }
       ]
+    },
+    {
+      "id": "fuji",
+      "name_ja": "富士山",
+      "aliases": [
+        "富士山",
+        "ふじさん",
+        "フジサン",
+        "富士",
+        "Fuji",
+        "Mt.Fuji",
+        "剣ヶ峰",
+        "剣ケ峰"
+      ],
+      "elevation": 3776,
+      "lat": 35.3606,
+      "lon": 138.7274,
+      "difficulty": "中級",
+      "area_hint": "日本最高峰（開山期 7 月上旬〜9 月上旬；毎日あるぺん号無此線，新宿搭富士登山巴士至五合目）",
+      "maitabi": {
+        "area_names": [],
+        "title_keywords": []
+      },
+      "trailheads": [
+        "吉田口五合目（富士スバルライン）",
+        "富士宮口五合目",
+        "須走口五合目",
+        "御殿場口新五合目"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/14",
+        "model_courses": []
+      },
+      "itineraries": [
+        {
+          "days": "1泊2日（吉田ルート王道）",
+          "plan": "Day1 午後從吉田口五合目出發→七・八合目山屋（泊）；Day2 深夜出發→山頂看御来光→お鉢巡り（剣ヶ峰）→下山",
+          "recommended_hut": "東洋館或御来光館"
+        },
+        {
+          "days": "注意",
+          "plan": "官方強烈勸阻彈丸登山（不住宿夜衝）；吉田ルート入山需事前預約並繳通行料，14:00 後無山屋預約者禁止入山（詳見富士登山オフィシャルサイト）",
+          "recommended_hut": null
+        }
+      ],
+      "huts": [
+        {
+          "name": "東洋館",
+          "elevation": 3000,
+          "note": "七合目上部（海抜一万尺），吉田ルート人氣山屋，全個室化",
+          "booking_url": "https://www.fuji-toyokan.jp/",
+          "phone": "0555-22-1040"
+        },
+        {
+          "name": "太子舘",
+          "elevation": 3100,
+          "note": "八合目，御来光前的定番宿",
+          "booking_url": "https://www.mfi.or.jp/~taisikan/"
+        },
+        {
+          "name": "御来光館",
+          "elevation": 3450,
+          "note": "八合五勺，吉田・須走ルート最接近山頂的山屋",
+          "booking_url": "https://www.goraikoukan.jp/"
+        }
+      ]
     }
   ]
 }

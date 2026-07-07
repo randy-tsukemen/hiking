@@ -30,5 +30,5 @@ def test_find_substring():
 
 def test_find_missing_returns_none():
     db = MountainDB.load()
-    assert db.find("富士山ではない山") is None
+    assert db.find("高尾山") is None
     assert db.find("") is None
