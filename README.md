@@ -32,6 +32,29 @@ uv sync
 安裝後在**任何專案**都能直接說「我想爬燕岳」「這週末去哪爬山好？」，
 Claude 會透過 uvx 從本 repo 執行 CLI（免 clone、免安裝，只需要 [uv](https://docs.astral.sh/uv/)）。
 
+## 給任何 AI Agent：MCP server
+
+資料層以 [MCP](https://modelcontextprotocol.io/) 開放——Claude Desktop、Cursor、
+自建 Agent 等任何 MCP client 都能直接使用（免 clone，只需要 uv）：
+
+```json
+{
+  "mcpServers": {
+    "yama": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/randy-tsukemen/hiking", "yama-mcp"]
+    }
+  }
+}
+```
+
+提供 6 個工具：`list_mountains`、`get_mountain_info`（含 Yamap 路線難度數據）、
+`get_weather`（16 天適宜度）、`get_bus_options`（含預約連結）、
+`rank_mountains_by_weather`、`check_hut_room_availability`（房間空位實查）。
+
+同一份資料層有三種介面：CLI（人用）、Claude Code plugin（Claude Code 用）、
+MCP（任何 Agent 用）——挑適合你的。
+
 ## 透過 AI Agent 使用（推薦）
 
 本 repo 內建 Claude Code skill（`.claude/skills/yama/`）。在這個目錄開 Claude Code，
