@@ -228,6 +228,7 @@ def plan(
     mountain: str = typer.Argument(..., help="山名（支援日文、假名、常見別名）"),
     month: int | None = typer.Option(None, "--month", "-m", min=1, max=12, help="巴士查詢月份（預設當月）"),
     out: Path | None = typer.Option(None, "--out", help="輸出 Markdown 檔案"),
+    html: Path | None = typer.Option(None, "--html", help="輸出圖表版 HTML（可直接分享）"),
 ) -> None:
     """產生指定山岳的完整登山規劃報告。"""
     db = MountainDB.load()
@@ -238,6 +239,12 @@ def plan(
         raise typer.Exit(1)
     with console.status(f"查詢 {m.name} 的天氣與巴士方案中…"):
         with MaitabiClient() as client:
+            if html:
+                from .html_report import render_html
+
+                html.write_text(render_html(m, client, month=month), encoding="utf-8")
+                console.print(f"已輸出 HTML：{html}")
+                return
             md = build_mountain_report(m, client, month=month)
     _output(md, out)
 

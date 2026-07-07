@@ -70,6 +70,7 @@ Claude 會自動執行 CLI、解讀報告，並依你的需求整理出建議（
 uv run yama 燕岳                # 完整報告：天氣 + 巴士 + 山屋 + 路線圖
 uv run yama 燕岳 --month 8      # 指定巴士查詢月份
 uv run yama 燕岳 --out plan.md  # 另存 Markdown 檔
+uv run yama 燕岳 --html plan.html  # 圖表版 HTML（天氣圖+路線比較圖+方案表，可直接分享）
 
 uv run yama weekend             # 這週末適合去哪些山？（天氣排名 + 巴士可預約標記）
 uv run yama weekend --no-bus    # 只看天氣，跳過巴士查詢（較快）

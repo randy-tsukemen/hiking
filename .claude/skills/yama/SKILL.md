@@ -19,6 +19,7 @@ description: >-
 uv run yama list                 # 收錄的 15 座山（先用這個確認山名有沒有收錄）
 uv run yama <山名> --out <檔案>   # 單座山完整報告（天氣、巴士+預約連結、山屋、路線圖）
 uv run yama <山名> --month 8 --out <檔案>   # 指定巴士查詢月份
+uv run yama <山名> --html <檔案>        # 圖表版 HTML（使用者要分享/存檔時用）
 uv run yama weekend --out <檔案>  # 這週末適合去哪些山（排名+巴士可預約標記）
 uv run yama best --days 14 --out <檔案>     # 未來 N 天最佳登山日排名
 uv run yama go <山名> [--when weekend|best|日期] [--party N]  # 一鍵成案：驗證天氣→巴士→房間，直接給唯一建議
