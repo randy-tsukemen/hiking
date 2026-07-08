@@ -262,6 +262,29 @@ def check_hut_room_availability(course_no: int, depart_date: str) -> dict[str, A
 
 
 
+def verify_trip_candidate(mountain: str, hike_date: str, party: int = 1,
+                          nights: int = -1) -> dict[str, Any]:
+    """查證某個登山日的全部事實（天氣數據、巴士班次狀態、套裝房間逐晚實查），
+    **不做推薦**——取捨由你依使用者偏好判斷。
+
+    hike_date: YYYY-MM-DD（登山日，夜行巴士為前一晚出發）。
+    nights: 泊數；-1 表示用資料庫預設行程的泊數。
+    近期規劃的正確流程：先 get_weather 看天氣→與使用者確認候選日→
+    對候選日呼叫本工具→依使用者偏好（價格/山屋/風險容忍）組合建議。
+    """
+    from datetime import date as _date
+
+    from .planner import verify_candidate
+
+    m = _get_db().find(mountain)
+    if m is None:
+        return _not_found(mountain)
+    with MaitabiClient() as client:
+        return verify_candidate(
+            m, client, _date.fromisoformat(hike_date),
+            nights=None if nights < 0 else nights, party=party)
+
+
 def plan_trip(mountain: str, when: str = "weekend", party: int = 1) -> dict[str, Any]:
     """一鍵成案：驗證天氣→巴士→房間後回傳唯一建議（人只需按預約連結確認）。
 
@@ -308,5 +331,6 @@ TOOL_FUNCTIONS = [
     get_bus_options,
     rank_mountains_by_weather,
     check_hut_room_availability,
+    verify_trip_candidate,
     plan_trip,
 ]
