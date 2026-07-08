@@ -165,11 +165,12 @@ def fetch_bus_data(
     for group in (data.outbound, data.roundtrip, data.inbound):
         group.sort(key=lambda t: _parse_price(t.price))
 
-    # 抓詳細（含各出發日預約連結），三組平均分配額度
-    per_group = max(1, max_details // 3)
-    for group in (data.outbound, data.roundtrip, data.inbound):
-        for t in group[:per_group]:
-            data.details[t.course_no] = client.get_tour_detail(t.course_no)
+    # 抓詳細（含各出發日預約連結），三組平均分配額度；max_details=0 → 純清單模式
+    if max_details > 0:
+        per_group = max(1, max_details // 3)
+        for group in (data.outbound, data.roundtrip, data.inbound):
+            for t in group[:per_group]:
+                data.details[t.course_no] = client.get_tour_detail(t.course_no)
     return data
 
 

@@ -117,11 +117,15 @@ def get_weather(mountain: str) -> dict[str, Any]:
     return {"name": m.name, "elevation_m": m.elevation, "forecast_16d": days}
 
 
-def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
+def get_bus_options(mountain: str, month: int | None = None,
+                    include_departures: bool = False) -> dict[str, Any]:
     """查詢一座山的毎日あるぺん号巴士方案（東京發）。
 
-    回傳去程/來回/回程各前 2 便宜的方案，含近期出發日、催行狀態、
-    價格與直達預約連結。month 省略時查當月。
+    預設（include_departures=False）快速回傳方案清單（名稱/分類/價格/
+    詳細連結，去程/來回/回程各前 3），**不含出發日班次**——適合第一階段
+    介紹方案組合。使用者對特定方案有興趣後，再以 include_departures=True
+    取得出發日與預約連結（較慢），房間空位另用 check_hut_room_availability。
+    month 省略時查當月。
     """
     m = _get_db().find(mountain)
     if m is None:
@@ -129,11 +133,13 @@ def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
     today = date.today()
     month = month or today.month
     grades: dict[date, str] = {}
-    for fc in get_forecast(m.lat, m.lon, m.elevation):
-        grades[fc.day] = rate_day(fc, m.difficulty).grade
+    if include_departures:
+        for fc in get_forecast(m.lat, m.lon, m.elevation):
+            grades[fc.day] = rate_day(fc, m.difficulty).grade
 
     with MaitabiClient() as client:
-        bus = fetch_bus_data(m, client, month, today, max_details=4)
+        bus = fetch_bus_data(m, client, month, today,
+                             max_details=4 if include_departures else 0)
     if bus.empty:
         return {
             "name": m.name,
@@ -145,7 +151,7 @@ def get_bus_options(mountain: str, month: int | None = None) -> dict[str, Any]:
 
     def pack(tours, night_bus: bool) -> list[dict[str, Any]]:
         out = []
-        for t in tours[:2]:
+        for t in tours[: 2 if include_departures else 3]:
             d = bus.details.get(t.course_no)
             slots = []
             if d:
