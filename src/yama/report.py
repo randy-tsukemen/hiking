@@ -240,28 +240,6 @@ def build_mountain_report(
     lines += [f"## 毎日あるぺん号 巴士方案（東京發，{month} 月）", ""]
     bus = fetch_bus_data(m, client, month, today)
 
-    # 3.9 路線 × 方案對應（路線決定天數與進出點，才能決定訂什麼）
-    if routes and not bus.empty:
-        from .matching import exit_stop, match_routes_to_plans
-
-        matches = match_routes_to_plans(routes, bus, m)
-        if matches:
-            lines += ["### 路線 × 方案怎麼搭", ""]
-            for tm in matches:
-                rep = min(tm.routes, key=lambda r: r.course_constant or 99)
-                route_s = f"{rep.name[:22]}…" if len(rep.name) > 23 else rep.name
-                extra = f" 等 {len(tm.routes)} 條" if len(tm.routes) > 1 else ""
-                lines.append(f"- **{tm.tier}**（{route_s}{extra}）→")
-                if not tm.plans:
-                    lines.append("  - 本月無對應的往復方案（可分開訂往路＋復路）")
-                for cat, t in tm.plans:
-                    stop = exit_stop(t)
-                    stop_s = f"，回程 {stop} 上車" if stop and cat == "異口縱走用" else ""
-                    lines.append(
-                        f"  - {cat}：{t.title[:34]}… {t.price}{stop_s}"
-                        f"（[詳細](https://bus.maitabi.jp/detail.html?course_no={t.course_no})）"
-                    )
-            lines.append("")
     if bus.empty:
         lines += [f"{month} 月查無「{'、'.join(m.maitabi_area_names)}」方面的巴士方案。", ""]
     else:

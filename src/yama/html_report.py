@@ -144,9 +144,6 @@ def render_html(
     routes = fetch_all_routes(m.yamap) if m.yamap else []
     bus = fetch_bus_data(m, client, month, today)
 
-    from .matching import exit_stop, match_routes_to_plans
-    matches = match_routes_to_plans(routes, bus, m) if (routes and not bus.empty) else []
-
     o = []
     o.append(f"<title>{_e(m.name)} 登山規劃｜{m.elevation}m</title>")
     o.append(f"<style>{_CSS}</style>")
@@ -184,26 +181,6 @@ def render_html(
                      f'<td class="num">{r.time_hm}</td><td class="num">{r.course_constant or "—"}</td>'
                      f'<td class="num">{fl}</td><td>{r.schedule_label}</td></tr>')
         o.append('</table></div></section>')
-
-    # 路線×方案
-    if matches:
-        o.append('<section class="panel"><h2>路線 × 方案怎麼搭</h2>'
-                 '<p class="sub">先挑路線層級，再訂對應方案</p>')
-        for tm in matches:
-            rep = min(tm.routes, key=lambda r: r.course_constant or 99)
-            o.append(f'<p class="tier">{_e(tm.tier)}'
-                     f'<span class="sub">（{_e(rep.name[:24])}'
-                     f'{f" 等{len(tm.routes)}條" if len(tm.routes) > 1 else ""}）</span></p><ul>')
-            if not tm.plans:
-                o.append("<li>本月無對應往復方案（可分開訂往路＋復路）</li>")
-            for cat, t in tm.plans:
-                stop = exit_stop(t)
-                stop_s = f"（回程 {_e(stop)} 上車）" if stop and cat == "異口縱走用" else ""
-                o.append(f'<li><span class="chip">{_e(cat)}</span> '
-                         f'<a href="https://bus.maitabi.jp/detail.html?course_no={t.course_no}">'
-                         f'{_e(t.title[:36])}</a> {_e(t.price)}{stop_s}</li>')
-            o.append("</ul>")
-        o.append("</section>")
 
     # bus plans（含出發日與預約連結）
     if not bus.empty:
