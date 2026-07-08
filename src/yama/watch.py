@@ -153,25 +153,38 @@ def _check_weather(w: Watch) -> tuple[str, str, bool]:
             f"{d.month}/{d.day}({'一二三四五六日'[d.weekday()]}){g}{s}"
             for d, g, s in first)
         sig = ",".join(sorted({win[0][0].isoformat() for win in windows}))
-        return sig, f"🌤 {m.name} 出現天氣窗：{span}（可用 yama go {m.name} 成案）", True
+        return sig, f"🌤 {m.name} 出現天氣窗：{span}", True
     return "none", f"{m.name}：16 天內尚無 ≥{w.min_score} 的窗口", False
 
 
-def _with_plan(w: Watch, desc: str) -> str:
-    """天氣窗出現時自動成案，通知直接附方案與預約連結。"""
+def _with_plan(w: Watch, desc: str, sig: str) -> str:
+    """天氣窗出現時附上該日的查證事實（不做選擇——判斷留給看通知的人/agent）。"""
     try:
         from .maitabi import MaitabiClient
         from .matcher import MountainDB
-        from .planner import plan_trip, render_plan
+        from .planner import verify_candidate
 
         m = MountainDB.load().find(w.mountain)
         if m is None:
             return desc
+        # sig 記錄的第一個窗口日
+        first = sig.split(",")[0] if sig else None
+        hike_day = date.fromisoformat(first) if first and first != "none" else None
+        if hike_day is None:
+            return desc
         with MaitabiClient() as client:
-            p = plan_trip(m, client, when="best")
-        return desc + "\n\n" + render_plan(p)
-    except Exception as e:  # 成案失敗不影響通知本身
-        return desc + f"\n（自動成案失敗：{e}）"
+            v = verify_candidate(m, client, hike_day)
+        lines = [f"\n{hike_day.isoformat()} 查證事實："]
+        for p in v["roundtrip_plans"][:4]:
+            room = ("房間" + ("✅" if p.get("rooms_all_ok") else "❌")
+                    ) if "rooms" in p else ""
+            lines.append(f"・[{p['category']}] {p['title'][:26]}… {p['price']} "
+                         f"巴士:{p['bus_status']} {room}")
+            if p.get("booking_url") and (p.get("rooms_all_ok") or "rooms" not in p):
+                lines.append(f"  預約 {p['booking_url']}")
+        return desc + "\n".join(lines)
+    except Exception as e:  # 查證失敗不影響通知本身
+        return desc + f"\n（自動查證失敗：{e}）"
 
 
 def _notify(title: str, message: str) -> None:
@@ -221,7 +234,7 @@ def run_checks(notify_unchanged: bool = False) -> list[str]:
         improved = good and sig != w.last_state
         if improved:
             if w.type == "weather":
-                desc = _with_plan(w, desc)
+                desc = _with_plan(w, desc, sig)
             _notify("yama 監控", desc)
         elif notify_unchanged:
             print(desc)

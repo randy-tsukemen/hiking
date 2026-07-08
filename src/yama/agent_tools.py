@@ -291,44 +291,6 @@ def verify_trip_candidate(mountain: str, hike_date: str, party: int = 1,
             nights=None if nights < 0 else nights, party=party)
 
 
-def plan_trip(mountain: str, when: str = "weekend", party: int = 1) -> dict[str, Any]:
-    """一鍵成案：驗證天氣→巴士→房間後回傳唯一建議（人只需按預約連結確認）。
-
-    when: "weekend"（預設，下個週末）/ "best"（14 天內最佳）/ "YYYY-MM-DD"（指定登山日）。
-    party: 人數。回傳含已驗證的天氣、方案、價格、逐晚房間狀態、預約與詳細連結；
-    ok=False 時 reason 說明不成案原因（天氣差/無巴士）。
-    """
-    from .planner import plan_trip as _plan
-
-    m = _get_db().find(mountain)
-    if m is None:
-        return _not_found(mountain)
-    with MaitabiClient() as client:
-        p = _plan(m, client, when=when, party=party)
-    out: dict[str, Any] = {
-        "ok": p.ok,
-        "mountain": p.mountain,
-        "reason": p.reason,
-        "hike_dates": [d.isoformat() for d in p.hike_dates],
-        "weather": p.weather_notes,
-        "depart_date": p.depart_date.isoformat() if p.depart_date else None,
-        "course_title": p.course_title,
-        "price": p.price,
-        "detail_url": p.detail_url,
-        "booking_url": p.booking_url,
-        "itinerary": p.itinerary,
-        "lodging_note": p.lodging_note,
-        "alternatives": p.alternatives,
-    }
-    if p.rooms:
-        out["rooms"] = [
-            {"night": n.night, "facility": n.facility, "room_type": n.room_type,
-             "status": n.status, "ok": n.ok}
-            for n in p.rooms.nights
-        ]
-    return out
-
-
 # Gemini function declarations（給 agent.py 註冊用）
 TOOL_FUNCTIONS = [
     list_mountains,
@@ -338,5 +300,4 @@ TOOL_FUNCTIONS = [
     rank_mountains_by_weather,
     check_hut_room_availability,
     verify_trip_candidate,
-    plan_trip,
 ]
