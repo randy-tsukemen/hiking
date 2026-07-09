@@ -33,6 +33,7 @@ uvx --from git+https://github.com/randy-tsukemen/hiking yama <指令>
 ... yama <山名> --html <檔案>        # 圖表版 HTML（使用者要分享/存檔時用）
 ... yama weekend --out <檔案>     # 這週末適合去哪些山（排名+巴士可預約標記）
 ... yama best --days 14 --out <檔案>     # 未來 N 天最佳登山日排名
+... yama hut <山屋名> <YYYY-MM>   # 山屋官網（Yamatan）逐日空位
 ... yama rooms <course_no> <日期>    # 查套裝方案的山屋「房間」空位（巴士有位≠房間有位）
 ```
 
@@ -81,6 +82,11 @@ uvx --from git+https://github.com/randy-tsukemen/hiking yama <指令>
   嚴禁只憑巴士的「受付中」就說套裝可訂（曾發生雷鳥荘整月滿房但巴士全顯示受付中）
   （○=有空位、數字=剩餘數、RQ=請求受理、WT=候補、×=已滿）。
 
+- **山屋空位是雙渠道**：巴士套裝（`yama rooms`）與山屋官網（`yama hut <山屋名>
+  <YYYY-MM>`，Yamatan 平台）是**分開的庫存**——套裝満房時官網可能有位、
+  反之亦然（實例：雷鳥沢 8/8 官網満室但套裝 RQ 可申請）。使用者關心某山屋時
+  兩邊都查。監控：`yama watch hut <山屋名> <宿泊日> [--party N]`。
+  沒有 Yamatan 對應的山屋誠實告知預約方式（官網/電話）。
 3. 天氣只有未來 16 天有資料；更遠的日期說明無法預測，並建議接近日期再查。
 4. 若使用者的山不在 `yama list` 裡，直接說明未收錄，並列出已收錄的山。
 5. 適宜度只是規則式參考指標；高風險行程（上級難度、殘雪期）提醒使用者

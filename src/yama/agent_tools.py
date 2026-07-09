@@ -291,6 +291,49 @@ def verify_trip_candidate(mountain: str, hike_date: str, party: int = 1,
             nights=None if nights < 0 else nights, party=party)
 
 
+def check_hut_official_availability(hut_name: str, month: str) -> dict[str, Any]:
+    """查山屋「官網直訂」（Yamatan 平台）的逐日空位——與巴士套裝是**分開的庫存**，
+    套裝満房時官網可能有位、反之亦然，兩邊都查才完整。
+
+    month 格式 YYYY-MM。回傳逐日各房型剩餘位數；沒有 Yamatan 對應時回報
+    該山屋的預約方式（官網連結/電話）。
+    """
+    from .yamatan import YamatanError, booking_url, get_month_availability
+
+    db = _get_db()
+    target = None
+    for m in db.mountains:
+        for h in m.huts:
+            if hut_name in h["name"]:
+                target = h
+                break
+    if target is None:
+        return {"error": f"資料庫沒有「{hut_name}」這家山屋"}
+    if not target.get("yamatan_id"):
+        return {"hut": target["name"], "yamatan": False,
+                "note": "此山屋不在 Yamatan 平台，請用官網或電話確認",
+                "booking_url": target["booking_url"],
+                "phone": target.get("phone")}
+    y, mo = int(month[:4]), int(month[5:7])
+    try:
+        days = get_month_availability(target["yamatan_id"], y, mo)
+    except YamatanError as e:
+        return {"hut": target["name"], "error": str(e)}
+    return {
+        "hut": target["name"],
+        "booking_url": booking_url(target["yamatan_id"]),
+        "month": month,
+        "days": [
+            {"date": d.day.isoformat(),
+             "weekday": "一二三四五六日"[d.day.weekday()],
+             "status": d.status,
+             "rooms": [{"room": r.room, "remaining": r.remaining,
+                        "capacity": r.capacity} for r in d.rooms if r.capacity]}
+            for d in days
+        ],
+    }
+
+
 # Gemini function declarations（給 agent.py 註冊用）
 TOOL_FUNCTIONS = [
     list_mountains,
@@ -300,4 +343,5 @@ TOOL_FUNCTIONS = [
     rank_mountains_by_weather,
     check_hut_room_availability,
     verify_trip_candidate,
+    check_hut_official_availability,
 ]

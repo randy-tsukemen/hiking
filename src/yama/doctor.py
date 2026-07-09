@@ -103,6 +103,16 @@ def _check_travelanswer() -> list[CheckResult]:
         return [CheckResult("travel-answer 房間解析", False, "找不到可測試的套裝方案")]
 
 
+def _check_yamatan() -> list[CheckResult]:
+    from .yamatan import get_month_availability
+
+    d = date.today()
+    days = get_month_availability("raichosawahutte", d.year, d.month)
+    ok = len(days) >= 28 and any(x.rooms for x in days)
+    detail = f"雷鳥沢 {d.year}-{d.month:02d}：{len(days)} 天資料"
+    return [CheckResult("Yamatan 空位解析", ok, detail)]
+
+
 def _check_hut_links(sample: int = 6) -> list[CheckResult]:
     """抽查山屋連結。只有 HTTP 4xx/5xx（403 除外，多為擋爬蟲）視為死鏈；
     連線失敗/逾時常是日本地方網站對海外 IP 的地域封鎖（CI 在美國），
@@ -136,7 +146,7 @@ def run_doctor() -> tuple[list[CheckResult], bool]:
     """跑全部健檢。回傳（結果列表, 是否全過）。"""
     results: list[CheckResult] = []
     for fn in (_check_maitabi, _check_weather, _check_yamap,
-               _check_travelanswer, _check_hut_links):
+               _check_travelanswer, _check_yamatan, _check_hut_links):
         try:
             results.extend(fn())
         except Exception as e:  # 健檢本身不可炸掉

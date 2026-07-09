@@ -34,15 +34,24 @@ _ROOM_OK = ("○", "RQ", "WT")  # × 以外都視為「出現機會」
 @dataclass
 class Watch:
     id: int
-    type: str  # room | weather
+    type: str  # room | weather | hut | hut
     # room
     course_no: int | None = None
     depart_date: str | None = None
     party: int = 1
+    # hut（山屋官網/Yamatan）
+    hut_name: str | None = None
+    yamatan_id: str | None = None
+    stay_date: str | None = None
+    min_remaining: int = 1
     # weather
     mountain: str | None = None
     min_score: int = 75  # ◎
     consecutive_days: int = 1
+    # hut（山屋官網直查）
+    hut_url: str | None = None
+    stay_date: str | None = None
+    hut_name: str | None = None
     # 狀態
     last_state: str = ""
     created: str = field(default_factory=lambda: date.today().isoformat())
@@ -75,6 +84,38 @@ def add_room_watch(course_no: int, depart_date: str, party: int = 1) -> Watch:
     return w
 
 
+def add_hut_watch(url: str, stay_date: str, name: str | None = None) -> Watch:
+    from .hutdirect import check_hut, detect_provider
+
+    if detect_provider(url) is None:
+        raise ValueError("不支援的預約系統網址"
+                         "（目前支援 tenawan.ne.jp / d-reserve.jp / yamatan.net）")
+    stay = stay_date.replace("/", "-")
+    if name is None:  # 加入時查一次，順便取得山屋名並記下目前狀態
+        name = check_hut(url, stay).hut
+    watches = _load()
+    w = Watch(
+        id=max((x.id for x in watches), default=0) + 1,
+        type="hut", hut_url=url, stay_date=stay, hut_name=name,
+    )
+    watches.append(w)
+    _save(watches)
+    return w
+
+
+def add_hut_watch(hut_name: str, yamatan_id: str, stay_date: str,
+                  party: int = 1) -> Watch:
+    watches = _load()
+    w = Watch(
+        id=max((x.id for x in watches), default=0) + 1,
+        type="hut", hut_name=hut_name, yamatan_id=yamatan_id,
+        stay_date=stay_date.replace("/", "-"), min_remaining=party,
+    )
+    watches.append(w)
+    _save(watches)
+    return w
+
+
 def add_weather_watch(mountain: str, min_score: int = 75,
                       consecutive_days: int = 1) -> Watch:
     watches = _load()
@@ -100,8 +141,13 @@ def remove_watch(watch_id: int) -> bool:
 
 
 def describe(w: Watch) -> str:
+    if w.type == "hut":
+        return (f"#{w.id} 山屋官網：{w.hut_name}／{w.stay_date} 宿泊"
+                f"／需 {w.min_remaining} 位")
     if w.type == "room":
         return f"#{w.id} 房間：course {w.course_no}／{w.depart_date} 出發／{w.party} 人"
+    if w.type == "hut":
+        return f"#{w.id} 山屋：{w.hut_name}／{w.stay_date} 泊"
     return (f"#{w.id} 天氣：{w.mountain}／適宜度 ≥{w.min_score}"
             f"／連續 {w.consecutive_days} 天")
 
@@ -124,6 +170,39 @@ def _check_room(w: Watch) -> tuple[str, str, bool]:
                 f"&p_course_no={w.course_no}&p_date={w.depart_date.replace('-', '/')}")
         return sig, desc, True
     return sig, f"{r.title or w.course_no}：房間仍為 " + sig, False
+
+
+def _check_hut(w: Watch) -> tuple[str, str, bool]:
+    from .hutdirect import check_hut
+
+    r = check_hut(w.hut_url, w.stay_date)
+    sig = r.signature()
+    open_rooms = [x for x in r.rooms if x.available]
+    if open_rooms:
+        lines = [f"🎉 {r.hut} {w.stay_date} 泊出現空位！"]
+        lines += [f"・{x.room}：{x.status}" for x in open_rooms[:8]]
+        lines.append(f"預約：{w.hut_url}")
+        return sig, "\n".join(lines), True
+    if not r.rooms:
+        return sig, f"{r.hut}：{w.stay_date} 無販售中房型", False
+    return sig, f"{r.hut}：{w.stay_date} 全房型仍滿房/停售", False
+
+
+def _check_hut(w: Watch) -> tuple[str, str, bool]:
+    from .yamatan import booking_url, get_month_availability
+
+    d = date.fromisoformat(w.stay_date)
+    days = get_month_availability(w.yamatan_id, d.year, d.month)
+    day = next((x for x in days if x.day == d), None)
+    if day is None:
+        return "no-data", f"{w.hut_name} {w.stay_date}：查無資料", False
+    sig = str(day.remaining_total)
+    if day.remaining_total >= w.min_remaining:
+        rooms = "、".join(f"{r.room[:10]}残{r.remaining}"
+                          for r in day.rooms if r.remaining)
+        return sig, (f"🏠 {w.hut_name} {w.stay_date} 官網有空位！{rooms}"
+                     f"\n預約 {booking_url(w.yamatan_id)}"), True
+    return sig, f"{w.hut_name} {w.stay_date}：{day.status}", False
 
 
 def _check_weather(w: Watch) -> tuple[str, str, bool]:
@@ -221,13 +300,20 @@ def run_checks(notify_unchanged: bool = False) -> list[str]:
     watches = _load()
     results = []
     today = date.today().isoformat()
+    checkers = {"room": _check_room, "weather": _check_weather, "hut": _check_hut}
+
+    def expired(w: Watch) -> bool:
+        limit = w.depart_date if w.type == "room" else (
+            w.stay_date if w.type == "hut" else None)
+        return bool(limit and limit < today)
+
     for w in watches:
-        # 過期的房間監控自動清掉
-        if w.type == "room" and w.depart_date and w.depart_date < today:
+        # 過期的房間/山屋監控自動清掉
+        if expired(w):
             results.append(f"{describe(w)} → 已過期，自動移除")
             continue
         try:
-            sig, desc, good = (_check_room if w.type == "room" else _check_weather)(w)
+            sig, desc, good = checkers[w.type](w)
         except Exception as e:  # 監控不可讓單項錯誤中斷整輪
             results.append(f"{describe(w)} → 檢查失敗：{e}")
             continue
@@ -240,6 +326,5 @@ def run_checks(notify_unchanged: bool = False) -> list[str]:
             print(desc)
         w.last_state = sig
         results.append(desc)
-    _save([w for w in watches
-           if not (w.type == "room" and w.depart_date and w.depart_date < today)])
+    _save([w for w in watches if not expired(w)])
     return results

@@ -615,7 +615,8 @@
           "elevation": 2370,
           "note": "雷鳥沢畔、有溫泉；三山縱走下山點旁，巴士套裝常有此選項",
           "booking_url": "https://www.raichozawa.net/",
-          "phone": "076-463-1835"
+          "phone": "076-463-1835",
+          "yamatan_id": "raichosawahutte"
         }
       ]
     },
@@ -1113,6 +1114,71 @@
           "elevation": 3450,
           "note": "八合五勺，吉田・須走ルート最接近山頂的山屋",
           "booking_url": "https://www.goraikoukan.jp/"
+        }
+      ]
+    },
+    {
+      "id": "nikko_shiranesan",
+      "name_ja": "日光白根山",
+      "aliases": [
+        "日光白根山",
+        "奥白根山",
+        "奥白根",
+        "日光白根",
+        "にっこうしらねさん",
+        "ニッコウシラネサン",
+        "白根山（日光）",
+        "五色沼（日光白根）",
+        "Nikko-Shiranesan",
+        "Nikko Shirane",
+        "Okushirane"
+      ],
+      "elevation": 2578,
+      "lat": 36.7986,
+      "lon": 139.3759,
+      "difficulty": "中級",
+      "area_hint": "日光連山（関東以北最高峰，丸沼高原ロープウェイ山頂駅2000m起點；山頂旁有五色沼火口湖，可走周回路線）",
+      "maitabi": {
+        "area_names": [
+          "日光白根山・男体山"
+        ],
+        "title_keywords": [
+          "日光白根"
+        ]
+      },
+      "trailheads": [
+        "丸沼高原ロープウェイ山頂駅",
+        "菅沼登山口"
+      ],
+      "yamap": {
+        "mountain_url": "https://yamap.com/mountains/252",
+        "model_courses": [
+          {
+            "title": "山頂駅-日光白根山 往復コース",
+            "url": "https://yamap.com/model-courses/509"
+          },
+          {
+            "title": "山頂駅発着｜日光白根山・五色沼・弥陀ヶ池周回コース",
+            "url": "https://yamap.com/model-courses/19648"
+          }
+        ]
+      },
+      "itineraries": [
+        {
+          "days": "夜行日帰り",
+          "plan": "夜行巴士清晨抵丸沼高原→搭ロープウェイ至山頂駅（2000m）→二荒山神社→森林帯→奥白根山頂（2578m）→弥陀ヶ池→五色沼周回→返回山頂駅搭纜車下山（實走約5〜6小時）；「パック」方案含纜車來回票與座禅温泉入浴"
+        },
+        {
+          "days": "夜行日帰り（菅沼起點）",
+          "plan": "菅沼登山口→弥陀ヶ池→奥白根山頂→五色沼→弥陀ヶ池→菅沼下山（不用纜車的傳統路線，爬升約850m；火山地形山頂裸岩，強風時注意）"
+        }
+      ],
+      "huts": [
+        {
+          "name": "五色沼避難小屋",
+          "elevation": 2490,
+          "note": "五色沼與山頂之間的無人避難小屋，緊急避難用、不可預約住宿；本山以夜行日帰り為主，無營業山屋",
+          "booking_url": "https://yamap.com/mountains/252"
         }
       ]
     }

@@ -110,6 +110,42 @@ def watch_room(
     console.print("用 `yama watch run` 檢查；排程請見 `yama watch run --help`")
 
 
+@watch_app.command("hut")
+def watch_hut(
+    url: str = typer.Argument(..., help="山屋官網預約頁連結"
+                              "（tenawan.ne.jp / d-reserve.jp / yamatan.net）"),
+    stay: str = typer.Argument(..., help="入住日 YYYY-MM-DD"),
+) -> None:
+    """監控山屋官網空房：滿房/停售 → 出現可訂房型時通知。"""
+    from .watch import add_hut_watch, describe
+
+    w = add_hut_watch(url, stay)
+    console.print(f"已加入監控：{describe(w)}")
+    console.print("用 `yama watch run` 檢查；排程請見 `yama watch run --help`")
+
+
+@watch_app.command("hut")
+def watch_hut(
+    name: str = typer.Argument(..., help="山屋名"),
+    stay_date: str = typer.Argument(..., help="宿泊日 YYYY-MM-DD"),
+    party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="需要幾位"),
+) -> None:
+    """監控山屋官網（Yamatan）空位：出現 ≥ 人數的空位時通知。"""
+    from .matcher import MountainDB
+    from .watch import add_hut_watch, describe
+
+    slug, full = None, name
+    for m in MountainDB.load().mountains:
+        for h in m.huts:
+            if name in h["name"] and h.get("yamatan_id"):
+                slug, full = h["yamatan_id"], h["name"]
+    if slug is None:
+        console.print(f"[red]「{name}」沒有 Yamatan 對應，無法監控官網空位[/red]")
+        raise typer.Exit(1)
+    w = add_hut_watch(full, slug, stay_date, party)
+    console.print(f"已加入監控：{describe(w)}")
+
+
 @watch_app.command("weather")
 def watch_weather(
     mountain: str = typer.Argument(..., help="山名"),
@@ -173,6 +209,42 @@ def doctor() -> None:
         console.print("[red]有項目失敗——對應功能可能已靜默壞掉，請檢查來源是否改版[/red]")
         raise typer.Exit(1)
     console.print("[green]全部通過[/green]")
+
+
+@app.command("hut")
+def hut(
+    name: str = typer.Argument(..., help="山屋名"),
+    month: str = typer.Argument(..., help="YYYY-MM"),
+) -> None:
+    """查山屋官網（Yamatan）逐日空位——巴士套裝與官網是分開的庫存。"""
+    from .matcher import MountainDB
+    from .yamatan import YamatanError, booking_url, get_month_availability
+
+    slug = None
+    for m in MountainDB.load().mountains:
+        for h in m.huts:
+            if name in h["name"] and h.get("yamatan_id"):
+                slug, name = h["yamatan_id"], h["name"]
+                break
+    if slug is None:
+        console.print(f"[red]「{name}」沒有 Yamatan 對應（或未收錄）——"
+                      "可能用其他預約系統，請看山屋官網[/red]")
+        raise typer.Exit(1)
+    y, mo = int(month[:4]), int(month[5:7])
+    with console.status("查詢 Yamatan 空位中…"):
+        try:
+            days = get_month_availability(slug, y, mo)
+        except YamatanError as e:
+            console.print(f"[red]{e}[/red]")
+            raise typer.Exit(1)
+    console.print(f"[bold]{name}[/bold] {y}-{mo:02d} 官網空位（{booking_url(slug)}）")
+    for dday in days:
+        wd = "一二三四五六日"[dday.day.weekday()]
+        wk = "[bold]" if dday.day.weekday() >= 5 else ""
+        rooms_s = "、".join(f"{r.room[:10]}残{r.remaining}"
+                            for r in dday.rooms if r.capacity)
+        console.print(f"{wk}{dday.day.month}/{dday.day.day:>2}({wd}) "
+                      f"{dday.status:>6s}  {rooms_s[:70]}{'[/bold]' if wk else ''}")
 
 
 @app.command("rooms")
@@ -242,7 +314,7 @@ def plan(
     _output(md, out)
 
 
-_COMMANDS = {"list", "weekend", "best", "plan", "rooms", "watch", "doctor"}
+_COMMANDS = {"list", "weekend", "best", "plan", "rooms", "hut", "watch", "doctor"}
 
 
 def run() -> None:
