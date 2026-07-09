@@ -1119,6 +1119,14 @@
           "booking_url": "https://chozogoya.com/",
           "phone": "050-1725-7100",
           "booking_system": "official_form"
+        },
+        {
+          "name": "桧枝岐小屋",
+          "elevation": 1410,
+          "note": "見晴地区（尾瀬ヶ原東端），燧ヶ岳見晴新道登山口旁；也適合尾瀬ヶ原橫斷行程",
+          "booking_url": "https://www.yamatan.net/hut/hinoematagoya",
+          "booking_system": "yamatan",
+          "yamatan_id": "hinoematagoya"
         }
       ]
     },
