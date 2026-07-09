@@ -298,8 +298,10 @@ def check_hut_official_availability(hut_name: str, month: str) -> dict[str, Any]
     month 格式 YYYY-MM。回傳逐日各房型剩餘位數；沒有 Yamatan 對應時回報
     該山屋的預約方式（官網連結/電話）。
     """
-    from .yamatan import YamatanError, booking_url, get_month_availability
+    from .hut_avail import (booking_page, ensure_adapters_loaded,
+                            get_hut_availability, hut_adapter_config)
 
+    ensure_adapters_loaded()
     db = _get_db()
     target = None
     for m in db.mountains:
@@ -309,26 +311,29 @@ def check_hut_official_availability(hut_name: str, month: str) -> dict[str, Any]
                 break
     if target is None:
         return {"error": f"資料庫沒有「{hut_name}」這家山屋"}
-    if not target.get("yamatan_id"):
-        return {"hut": target["name"], "yamatan": False,
-                "note": "此山屋不在 Yamatan 平台，請用官網或電話確認",
+    cfg = hut_adapter_config(target)
+    if cfg is None:
+        return {"hut": target["name"], "online_calendar": False,
+                "booking_system": target.get("booking_system", "unknown"),
+                "note": "此山屋無可機讀的線上空位系統（表單制或電話制），請直接聯絡",
                 "booking_url": target["booking_url"],
                 "phone": target.get("phone")}
+    adapter, hid = cfg
     y, mo = int(month[:4]), int(month[5:7])
     try:
-        days = get_month_availability(target["yamatan_id"], y, mo)
-    except YamatanError as e:
-        return {"hut": target["name"], "error": str(e)}
+        days = get_hut_availability(adapter, hid, y, mo)
+    except Exception as e:
+        return {"hut": target["name"], "error": str(e)[:120]}
     return {
         "hut": target["name"],
-        "booking_url": booking_url(target["yamatan_id"]),
+        "booking_url": booking_page(adapter, hid),
+        "booking_system": adapter,
         "month": month,
         "days": [
             {"date": d.day.isoformat(),
              "weekday": "一二三四五六日"[d.day.weekday()],
-             "status": d.status,
-             "rooms": [{"room": r.room, "remaining": r.remaining,
-                        "capacity": r.capacity} for r in d.rooms if r.capacity]}
+             "bookable": d.ok,
+             "detail": d.summary}
             for d in days
         ],
     }

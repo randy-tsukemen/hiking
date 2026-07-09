@@ -55,7 +55,11 @@
           "note": "北アルプス最具人氣的山屋之一，旺季需盡早預約",
           "booking_url": "https://enzanso-reservation.jp/reserve/enz0010.php?p=10&type=10",
           "phone": "0263-32-1535",
-          "booking_system": "official_calendar"
+          "booking_system": "official_calendar",
+          "avail": {
+            "adapter": "enzanso",
+            "id": "10"
+          }
         },
         {
           "name": "大天荘",
@@ -63,7 +67,11 @@
           "note": "大天井岳山頂直下，表銀座縱走中繼點（燕山荘グループ）",
           "booking_url": "https://www.enzanso.co.jp/daitenso",
           "phone": "0263-32-1535",
-          "booking_system": "official_calendar"
+          "booking_system": "official_calendar",
+          "avail": {
+            "adapter": "enzanso",
+            "id": "20"
+          }
         },
         {
           "name": "中房温泉",
@@ -220,7 +228,11 @@
           "booking_url": "https://www.hotakadakesanso.com/reservation",
           "phone": "090-7869-0045",
           "booking_system": "official_calendar",
-          "booking_opens": "宿泊日1ヶ月前(前月同日)午前8:00より"
+          "booking_opens": "宿泊日1ヶ月前(前月同日)午前8:00より",
+          "avail": {
+            "adapter": "hotaka",
+            "id": "10"
+          }
         }
       ]
     },
@@ -413,7 +425,11 @@
           "note": "東鎌尾根上、以餐點聞名的山屋，燕山荘集團經營，適合表銀座縱走者",
           "booking_url": "https://www.enzanso.co.jp/hutte-ooyari",
           "phone": "0263-32-1535",
-          "booking_system": "official_calendar"
+          "booking_system": "official_calendar",
+          "avail": {
+            "adapter": "enzanso",
+            "id": "30"
+          }
         },
         {
           "name": "槍沢ロッヂ",
@@ -493,7 +509,11 @@
           "booking_url": "http://www.tenawan.ne.jp/lodgment/rec/002/085/pcr.asp",
           "phone": "0261-75-3788",
           "booking_system": "external_platform",
-          "booking_opens": "2026年は5月8日(金)9:00より(天狗山荘と同時)"
+          "booking_opens": "2026年は5月8日(金)9:00より(天狗山荘と同時)",
+          "avail": {
+            "adapter": "tenawan",
+            "id": "002/085"
+          }
         }
       ]
     },
@@ -622,7 +642,11 @@
           "elevation": 2400,
           "note": "室堂平的溫泉山屋（らいちょう温泉），可泡湯，設備舒適；採WEB預約與信用卡事前結帳",
           "booking_url": "https://www.tenawan.ne.jp/lodgment/rec/007/602/",
-          "booking_system": "external_platform"
+          "booking_system": "external_platform",
+          "avail": {
+            "adapter": "tenawan",
+            "id": "007/602"
+          }
         },
         {
           "name": "みくりが池温泉",
@@ -1161,7 +1185,11 @@
           "note": "八合目，御来光前的定番宿",
           "booking_url": "https://www.tenawan.ne.jp/lodgment/rec/007/617/r.asp",
           "booking_system": "external_platform",
-          "booking_opens": "2026年は宿泊期間別に段階解禁(5/11-5/14の各9:00)"
+          "booking_opens": "2026年は宿泊期間別に段階解禁(5/11-5/14の各9:00)",
+          "avail": {
+            "adapter": "tenawan",
+            "id": "007/617"
+          }
         },
         {
           "name": "御来光館",

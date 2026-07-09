@@ -189,20 +189,22 @@ def _check_hut(w: Watch) -> tuple[str, str, bool]:
 
 
 def _check_hut(w: Watch) -> tuple[str, str, bool]:
-    from .yamatan import booking_url, get_month_availability
+    from .hut_avail import (booking_page, ensure_adapters_loaded,
+                            get_hut_availability)
 
+    ensure_adapters_loaded()
+    ref = w.yamatan_id or ""
+    adapter, _, hid = ref.partition(":") if ":" in ref else ("yamatan", "", ref)
     d = date.fromisoformat(w.stay_date)
-    days = get_month_availability(w.yamatan_id, d.year, d.month)
+    days = get_hut_availability(adapter, hid, d.year, d.month)
     day = next((x for x in days if x.day == d), None)
     if day is None:
         return "no-data", f"{w.hut_name} {w.stay_date}：查無資料", False
-    sig = str(day.remaining_total)
-    if day.remaining_total >= w.min_remaining:
-        rooms = "、".join(f"{r.room[:10]}残{r.remaining}"
-                          for r in day.rooms if r.remaining)
-        return sig, (f"🏠 {w.hut_name} {w.stay_date} 官網有空位！{rooms}"
-                     f"\n預約 {booking_url(w.yamatan_id)}"), True
-    return sig, f"{w.hut_name} {w.stay_date}：{day.status}", False
+    sig = day.summary
+    if day.ok:
+        return sig, (f"🏠 {w.hut_name} {w.stay_date} 官網有機會！{day.summary}"
+                     f"\n預約 {booking_page(adapter, hid)}"), True
+    return sig, f"{w.hut_name} {w.stay_date}：{day.summary}", False
 
 
 def _check_weather(w: Watch) -> tuple[str, str, bool]:

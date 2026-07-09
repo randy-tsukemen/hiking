@@ -76,6 +76,7 @@ uv run yama weekend             # 這週末適合去哪些山？（天氣排名 
 uv run yama weekend --no-bus    # 只看天氣，跳過巴士查詢（較快）
 uv run yama best --days 14      # 未來 14 天內每座山的最佳登山日排名
 
+uv run yama hut 燕山荘 2026-09      # 山屋官網逐日空位（15 家：Yamatan/tenawan/燕山荘系/穂高岳山荘）
 uv run yama rooms 8574 2026-07-10   # 查套裝方案的山屋「房間」空位（見下方說明）
 uv run yama watch room 8574 2026-07-10  # 監控空房釋出，變化時通知（見下方說明）
 uv run yama list                # 列出收錄的山岳

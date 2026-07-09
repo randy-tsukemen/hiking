@@ -131,18 +131,22 @@ def watch_hut(
     party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="需要幾位"),
 ) -> None:
     """監控山屋官網（Yamatan）空位：出現 ≥ 人數的空位時通知。"""
+    from .hut_avail import ensure_adapters_loaded, hut_adapter_config
     from .matcher import MountainDB
     from .watch import add_hut_watch, describe
 
-    slug, full = None, name
+    ensure_adapters_loaded()
+    cfg, full = None, name
     for m in MountainDB.load().mountains:
         for h in m.huts:
-            if name in h["name"] and h.get("yamatan_id"):
-                slug, full = h["yamatan_id"], h["name"]
-    if slug is None:
-        console.print(f"[red]「{name}」沒有 Yamatan 對應，無法監控官網空位[/red]")
+            if name in h["name"]:
+                c = hut_adapter_config(h)
+                if c:
+                    cfg, full = c, h["name"]
+    if cfg is None:
+        console.print(f"[red]「{name}」沒有可監控的線上系統（表單/電話制）[/red]")
         raise typer.Exit(1)
-    w = add_hut_watch(full, slug, stay_date, party)
+    w = add_hut_watch(full, f"{cfg[0]}:{cfg[1]}", stay_date, party)
     console.print(f"已加入監控：{describe(w)}")
 
 
@@ -217,34 +221,42 @@ def hut(
     month: str = typer.Argument(..., help="YYYY-MM"),
 ) -> None:
     """查山屋官網（Yamatan）逐日空位——巴士套裝與官網是分開的庫存。"""
+    from .hut_avail import (booking_page, ensure_adapters_loaded,
+                            get_hut_availability, hut_adapter_config)
     from .matcher import MountainDB
-    from .yamatan import YamatanError, booking_url, get_month_availability
 
-    slug = None
+    ensure_adapters_loaded()
+    cfg, full = None, name
     for m in MountainDB.load().mountains:
         for h in m.huts:
-            if name in h["name"] and h.get("yamatan_id"):
-                slug, name = h["yamatan_id"], h["name"]
-                break
-    if slug is None:
-        console.print(f"[red]「{name}」沒有 Yamatan 對應（或未收錄）——"
-                      "可能用其他預約系統，請看山屋官網[/red]")
+            if name in h["name"]:
+                c = hut_adapter_config(h)
+                if c:
+                    cfg, full = c, h["name"]
+                    break
+    if cfg is None:
+        console.print(f"[red]「{name}」沒有可查的線上系統（可能是表單制/電話制），"
+                      "請看山屋官網[/red]")
         raise typer.Exit(1)
+    adapter, hid = cfg
     y, mo = int(month[:4]), int(month[5:7])
-    with console.status("查詢 Yamatan 空位中…"):
+    with console.status(f"查詢山屋官網空位中（{adapter}）…"):
         try:
-            days = get_month_availability(slug, y, mo)
-        except YamatanError as e:
+            days = get_hut_availability(adapter, hid, y, mo)
+        except Exception as e:
             console.print(f"[red]{e}[/red]")
             raise typer.Exit(1)
-    console.print(f"[bold]{name}[/bold] {y}-{mo:02d} 官網空位（{booking_url(slug)}）")
-    for dday in days:
-        wd = "一二三四五六日"[dday.day.weekday()]
-        wk = "[bold]" if dday.day.weekday() >= 5 else ""
-        rooms_s = "、".join(f"{r.room[:10]}残{r.remaining}"
-                            for r in dday.rooms if r.capacity)
-        console.print(f"{wk}{dday.day.month}/{dday.day.day:>2}({wd}) "
-                      f"{dday.status:>6s}  {rooms_s[:70]}{'[/bold]' if wk else ''}")
+    if not days:
+        console.print(f"{full} {y}-{mo:02d}：該月不在營業季或尚未開放預約")
+        return
+    console.print(f"[bold]{full}[/bold] {y}-{mo:02d} 官網空位"
+                  f"（{booking_page(adapter, hid)}）")
+    for dd in days:
+        wd = "一二三四五六日"[dd.day.weekday()]
+        wk = "[bold]" if dd.day.weekday() >= 5 else ""
+        mark = "✅" if dd.ok else "・"
+        console.print(f"{wk}{dd.day.month}/{dd.day.day:>2}({wd}) {mark} "
+                      f"{dd.summary[:64]}{'[/bold]' if wk else ''}")
 
 
 @app.command("rooms")
