@@ -76,6 +76,13 @@ def get_month_availability(hut_slug: str, year: int, month: int) -> list[HutDay]
                {"hutId": hut_slug, "year": str(year), "month": f"{month:02d}"})
 
     rooms = [r for r in ev.get("rooms", []) if r.get("publish", True)]
+    # 停更偵測：所有房型的公開期間都早於查詢年份 → 山屋已離開平台
+    ends = [r.get("public_end_date") or "" for r in rooms]
+    latest = max(ends) if ends else ""
+    if latest and latest < f"{year:04d}-01-01":
+        raise YamatanError(
+            f"此山屋在 Yamatan 的資料已停止更新（房型公開期間最晚至 {latest}），"
+            "請改用山屋官網或電話預約")
     holidays = set()
     for h in ev.get("holidays", []):
         d = h.get("date") or h.get("start_date")

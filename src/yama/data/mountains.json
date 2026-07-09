@@ -53,22 +53,26 @@
           "name": "燕山荘",
           "elevation": 2712,
           "note": "北アルプス最具人氣的山屋之一，旺季需盡早預約",
-          "booking_url": "https://www.enzanso.co.jp/",
-          "phone": "0263-32-1535"
+          "booking_url": "https://enzanso-reservation.jp/reserve/enz0010.php?p=10&type=10",
+          "phone": "0263-32-1535",
+          "booking_system": "official_calendar"
         },
         {
           "name": "大天荘",
           "elevation": 2870,
           "note": "大天井岳山頂直下，表銀座縱走中繼點（燕山荘グループ）",
           "booking_url": "https://www.enzanso.co.jp/daitenso",
-          "phone": "0263-32-1535"
+          "phone": "0263-32-1535",
+          "booking_system": "official_calendar"
         },
         {
           "name": "中房温泉",
           "elevation": 1462,
           "note": "登山口的秘湯旅館，前泊後泊皆宜",
-          "booking_url": "https://nakabusa.com/",
-          "phone": "0263-77-1488"
+          "booking_url": "https://www.yamatan.net/hut/nakabusaonsen",
+          "phone": "0263-77-1488",
+          "booking_system": "yamatan",
+          "yamatan_id": "nakabusaonsen"
         }
       ]
     },
@@ -126,14 +130,16 @@
           "elevation": 2870,
           "note": "乗越浄土旁，位置便利",
           "booking_url": "https://miyadakankou.co.jp/houkensansou",
-          "phone": "090-7804-2185"
+          "phone": "090-7804-2185",
+          "booking_system": "phone_only"
         },
         {
           "name": "ホテル千畳敷",
           "elevation": 2612,
           "note": "纜車站直結的日本最高飯店，舒適但價位較高",
-          "booking_url": "https://www.chuo-alps.com/hotel/",
-          "phone": "0265-83-3844"
+          "booking_url": "https://www.chuo-alps.com/hotel/reserve/",
+          "phone": "0265-83-3844",
+          "booking_system": "official_calendar"
         }
       ]
     },
@@ -193,22 +199,28 @@
           "name": "涸沢ヒュッテ",
           "elevation": 2309,
           "note": "涸沢カール地標，紅葉季一位難求",
-          "booking_url": "https://www.karasawa-hyutte.com/",
-          "phone": "090-9002-2534"
+          "booking_url": "https://www.yamatan.net/hut/karasawahutte",
+          "phone": "090-9002-2534",
+          "booking_system": "yamatan",
+          "yamatan_id": "karasawahutte"
         },
         {
           "name": "涸沢小屋",
           "elevation": 2350,
           "note": "涸沢カール北側，往北穂方向",
-          "booking_url": "https://www.karasawagoya.com/",
-          "phone": "090-2204-1300"
+          "booking_url": "http://karasawagoya.com/",
+          "phone": "090-2204-1300",
+          "booking_system": "phone_only",
+          "booking_opens": "宿泊日の1ヶ月前(前月同日)から"
         },
         {
           "name": "穂高岳山荘",
           "elevation": 2996,
           "note": "白出のコル，登頂奥穂的前進基地",
-          "booking_url": "https://www.hotakadakesanso.com/",
-          "phone": "090-7869-0045"
+          "booking_url": "https://www.hotakadakesanso.com/reservation",
+          "phone": "090-7869-0045",
+          "booking_system": "official_calendar",
+          "booking_opens": "宿泊日1ヶ月前(前月同日)午前8:00より"
         }
       ]
     },
@@ -266,8 +278,9 @@
           "name": "常念小屋",
           "elevation": 2466,
           "note": "位於常念乘越，可眺望槍・穗高連峰；旺季採預約制，開山期4/29〜11/3，建議提早電話或線上預約",
-          "booking_url": "https://www.mt-jonen.com/",
-          "phone": "0263-37-5088"
+          "booking_url": "https://www.mt-jonen.com/reservation/",
+          "phone": "0263-37-5088",
+          "booking_system": "official_form"
         }
       ]
     },
@@ -326,8 +339,10 @@
           "name": "蝶ヶ岳ヒュッテ",
           "elevation": 2664,
           "note": "位於山頂稜線，正對槍・穗高的絕佳展望；採預約制（現地電話僅受理當日住宿），建議走官網或線上預約",
-          "booking_url": "https://chougatake.com/",
-          "phone": "0263-58-2210"
+          "booking_url": "https://www.yamatan.net/hut/chogadakehutte",
+          "phone": "0263-58-2210",
+          "booking_system": "yamatan",
+          "yamatan_id": "chogadakehutte"
         }
       ]
     },
@@ -387,22 +402,27 @@
           "name": "槍ヶ岳山荘",
           "elevation": 3080,
           "note": "山頂正下方、位置絕佳的大型山屋，攻頂基地；開山期採預約制，1個月前上午9點起開放線上或電話預約",
-          "booking_url": "https://www.yarigatake.co.jp/",
-          "phone": "090-2641-1911"
+          "booking_url": "https://www.yarigatake.net/reservation/",
+          "phone": "090-2641-1911",
+          "booking_system": "official_calendar",
+          "booking_opens": "宿泊予定日の1ヶ月前の朝9時より(WEBまたは現地電話)"
         },
         {
           "name": "ヒュッテ大槍",
           "elevation": 2884,
           "note": "東鎌尾根上、以餐點聞名的山屋，燕山荘集團經營，適合表銀座縱走者",
           "booking_url": "https://www.enzanso.co.jp/hutte-ooyari",
-          "phone": "0263-32-1535"
+          "phone": "0263-32-1535",
+          "booking_system": "official_calendar"
         },
         {
           "name": "槍沢ロッヂ",
           "elevation": 1820,
           "note": "槍沢路線中途的山屋，適合夜行抵達後第一晚住宿以分段攻頂，可洗澡",
-          "booking_url": "https://www.yarigatake.co.jp/",
-          "phone": "090-8250-2297"
+          "booking_url": "https://www.yarigatake.net/reservation/",
+          "phone": "090-8250-2297",
+          "booking_system": "official_calendar",
+          "booking_opens": "宿泊予定日の1ヶ月前の朝9時より"
         }
       ]
     },
@@ -461,15 +481,19 @@
           "name": "白馬山荘",
           "elevation": 2832,
           "note": "位於白馬岳山頂正下方，號稱日本最大的山屋，旺季務必提前預約；由白馬館營運",
-          "booking_url": "https://hakubakan.com/",
-          "phone": "0261-72-2002"
+          "booking_url": "https://yamayado.com/rooms",
+          "phone": "0261-72-2002",
+          "booking_system": "external_platform",
+          "booking_opens": "2026夏季は別途告知(hakubakan.com/hut/news260420/)"
         },
         {
           "name": "白馬岳頂上宿舎（村営）",
           "elevation": 2730,
           "note": "白馬村振興公社營運的村營山屋，位置略低於白馬山荘，另有帳篷場；預約與帳篷皆需事前申請",
-          "booking_url": "https://yamagoya.hakubakousha.com/reservation/",
-          "phone": "0261-75-3788"
+          "booking_url": "http://www.tenawan.ne.jp/lodgment/rec/002/085/pcr.asp",
+          "phone": "0261-75-3788",
+          "booking_system": "external_platform",
+          "booking_opens": "2026年は5月8日(金)9:00より(天狗山荘と同時)"
         }
       ]
     },
@@ -533,8 +557,10 @@
           "name": "唐松岳頂上山荘",
           "elevation": 2620,
           "note": "位於唐松岳與五竜岳之間的稜線上，是北アルプス入門的熱門山屋；建議WEB預約（宿泊日30天前開放）",
-          "booking_url": "http://karamatsu.jp/",
-          "phone": "090-5204-7876"
+          "booking_url": "http://karamatsu.jp/reserve.html",
+          "phone": "090-5204-7876",
+          "booking_system": "official_form",
+          "booking_opens": "宿泊日の30日前 0:00より(WEB)"
         }
       ]
     },
@@ -595,28 +621,33 @@
           "name": "雷鳥荘",
           "elevation": 2400,
           "note": "室堂平的溫泉山屋（らいちょう温泉），可泡湯，設備舒適；採WEB預約與信用卡事前結帳",
-          "booking_url": "https://www.raichoso.com/"
+          "booking_url": "https://www.tenawan.ne.jp/lodgment/rec/007/602/",
+          "booking_system": "external_platform"
         },
         {
           "name": "みくりが池温泉",
           "elevation": 2410,
           "note": "日本最高所的天然溫泉旅宿，距室堂ターミナル步行約15分；可網路或電話預約",
-          "booking_url": "https://www.mikuri.com/"
+          "booking_url": "https://www.mikuri.com/",
+          "booking_system": "official_form",
+          "booking_opens": "2026年度予約受付開始日を公式サイトで告知"
         },
         {
           "name": "一の越山荘",
           "elevation": 2700,
-          "note": "位於雄山登頂起點的一の越，距室堂約1小時，最靠近雄山山頂的山屋",
+          "note": "位於雄山登頂起點的一の越，距室堂約1小時，最靠近雄山山頂的山屋（曾用 Yamatan，2024 後未更新，請電話預約）",
           "booking_url": "http://tateyama-1nokoshi.in.coocan.jp/",
-          "phone": "090-1632-4629"
+          "phone": "090-1632-4629",
+          "booking_system": "phone_or_official"
         },
         {
           "name": "雷鳥沢ヒュッテ",
           "elevation": 2370,
           "note": "雷鳥沢畔、有溫泉；三山縱走下山點旁，巴士套裝常有此選項",
-          "booking_url": "https://www.raichozawa.net/",
+          "booking_url": "https://www.yamatan.net/hut/raichosawahutte",
           "phone": "076-463-1835",
-          "yamatan_id": "raichosawahutte"
+          "yamatan_id": "raichosawahutte",
+          "booking_system": "yamatan"
         }
       ]
     },
@@ -676,15 +707,18 @@
           "name": "太郎平小屋",
           "elevation": 2330,
           "note": "北アルプス縱走的要衝，位於太郎平開闊台地，是折立上山的第一晚據點；由ロッジ太郎經營",
-          "booking_url": "https://ltaro.com/",
-          "phone": "076-482-1418"
+          "booking_url": "https://select-type.com/rsv/?id=CPTNNRj6hVI",
+          "phone": "076-482-1418",
+          "booking_system": "external_platform"
         },
         {
           "name": "薬師岳山荘",
           "elevation": 2701,
           "note": "距薬師岳山頂最近的山屋，位於薬師平上方，登頂與看日出最方便；電話預約制（無網路預約）",
           "booking_url": "https://www.yakushidake-sansou.com/",
-          "phone": "076-451-9222"
+          "phone": "076-451-9222",
+          "booking_system": "phone_only",
+          "booking_opens": "山行予定日の2ヶ月ぐらい前を推奨"
         }
       ]
     },
@@ -743,20 +777,23 @@
           "name": "赤岳天望荘",
           "elevation": 2722,
           "note": "位於赤岳山頂北側稜線（地蔵ノ頭附近），距山頂約30分，看日出與稜線展望絕佳；自助餐與個室頗受歡迎",
-          "booking_url": "http://www.yatsugatake.gr.jp/",
-          "phone": "0266-74-2728"
+          "booking_url": "https://ssl.form-mailer.jp/fms/32dde60e707705",
+          "phone": "0266-74-2728",
+          "booking_system": "official_form"
         },
         {
           "name": "赤岳鉱泉",
           "elevation": 2220,
           "note": "北沢側據點，以豐盛晚餐（常有牛排）與冬季人工冰場（アイスキャンディ）聞名，全年營業",
-          "booking_url": "https://www.akadakekousen.jp/"
+          "booking_url": "https://www.akadakekousen.jp/reservation-for-japanese-guests",
+          "booking_system": "official_form"
         },
         {
           "name": "行者小屋",
           "elevation": 2350,
           "note": "位於文三郎尾根與地蔵尾根登山口，是赤岳周邊行程的中繼與紮營地，夏季營業（約6月～11月上旬）",
-          "booking_url": "https://www.akadakekousen.jp/"
+          "booking_url": "https://www.akadakekousen.jp/reservation-for-japanese-guests",
+          "booking_system": "official_form"
         }
       ]
     },
@@ -822,15 +859,18 @@
           "name": "こもれび山荘",
           "elevation": 2036,
           "note": "北沢峠上（舊名長衛荘），甲斐駒ヶ岳與仙丈ヶ岳的登山基地，由伊那市觀光經營；完全預約制，透過「やまたん」網路預約",
-          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/kitazawa/",
-          "phone": "050-1722-3710"
+          "booking_url": "https://www.yamatan.net/hut/komorebisanso",
+          "phone": "050-1722-3710",
+          "booking_system": "yamatan",
+          "yamatan_id": "komorebisanso"
         },
         {
           "name": "仙水小屋",
           "elevation": 2130,
           "note": "位於仙水峠下方，收容約20人的小型山屋，完全預約制，以清晨早出攻頂方便著稱",
           "booking_url": "https://www.minamialps-net.jp/yamagoya/021_sensui",
-          "phone": "080-5076-5494"
+          "phone": "080-5076-5494",
+          "booking_system": "phone_only"
         }
       ]
     },
@@ -892,21 +932,27 @@
           "name": "北沢峠こもれび山荘",
           "elevation": 2044,
           "note": "位於北沢峠登山基地，仙丈與甲斐駒共用據點；完全預約制，透過 Yamatan 線上預約，不接受電話預約",
-          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/kitazawa/",
-          "phone": "080-8760-4367"
+          "booking_url": "https://www.yamatan.net/hut/komorebisanso",
+          "phone": "080-8760-4367",
+          "booking_system": "yamatan",
+          "yamatan_id": "komorebisanso"
         },
         {
           "name": "仙丈小屋",
           "elevation": 2884,
           "note": "位於藪沢冰斗上方、最接近山頂的山屋，看日出登頂方便；營業約6月中至10月中",
-          "booking_url": "https://www.ina-city-kankou.co.jp/yamagoya/senjo/",
-          "phone": "090-1883-3033"
+          "booking_url": "https://www.yamatan.net/hut/senjougoya",
+          "phone": "090-1883-3033",
+          "booking_system": "yamatan",
+          "yamatan_id": "senjougoya"
         },
         {
           "name": "馬の背ヒュッテ",
           "elevation": 2630,
           "note": "藪沢路線上的溫馨山屋，鹿肉咖哩為招牌；適合下山繞經藪沢路線者",
-          "booking_url": "https://umanose.com/"
+          "booking_url": "https://www.yamatan.net/hut/umanosehutte",
+          "booking_system": "yamatan",
+          "yamatan_id": "umanosehutte"
         }
       ]
     },
@@ -969,7 +1015,8 @@
           "elevation": 1920,
           "note": "位於トマの耳下方稜線的公營山屋，定員約40名為小型山屋，需預約；營業約4月下旬至11月3日，由みなかみ町管理",
           "booking_url": "https://mmga.jp/2021/03/25/katanokoya/",
-          "phone": "090-3347-0802"
+          "phone": "090-3347-0802",
+          "booking_system": "phone_only"
         }
       ]
     },
@@ -1036,15 +1083,18 @@
           "name": "尾瀬御池ロッジ",
           "elevation": 1500,
           "note": "御池登山口旁的村營住宿，夜行抵達後整裝登山的據點；營業約5月下旬至10月下旬，需預約",
-          "booking_url": "https://www.oze-info.jp/ozh_stay/miikelodge/",
-          "phone": "080-2844-8873"
+          "booking_url": "https://d-reserve.jp/GSEA001F01300/GSEA001A01?hotelCode=0000002792&searchType=room",
+          "phone": "080-2844-8873",
+          "booking_system": "external_platform",
+          "booking_opens": "毎年3月第2月曜(2026年は3月9日)WEB予約開始"
         },
         {
           "name": "長蔵小屋",
           "elevation": 1665,
           "note": "尾瀬沼畔歷史悠久的山屋，適合縱走下山後留宿；2026年第二長蔵小屋整修休館，本館照常營業",
           "booking_url": "https://chozogoya.com/",
-          "phone": "050-1725-7100"
+          "phone": "050-1725-7100",
+          "booking_system": "official_form"
         }
       ]
     },
@@ -1100,20 +1150,25 @@
           "name": "東洋館",
           "elevation": 3000,
           "note": "七合目上部（海抜一万尺），吉田ルート人氣山屋，全個室化",
-          "booking_url": "https://www.fuji-toyokan.jp/",
-          "phone": "0555-22-1040"
+          "booking_url": "https://www.489pro.com/asp/489/menu.asp?id=19000037&ty=ser&list=YES&liop=1",
+          "phone": "0555-22-1040",
+          "booking_system": "external_platform",
+          "booking_opens": "2026年一般予約は5月2日受付案内予定"
         },
         {
           "name": "太子舘",
           "elevation": 3100,
           "note": "八合目，御来光前的定番宿",
-          "booking_url": "https://www.mfi.or.jp/~taisikan/"
+          "booking_url": "https://www.tenawan.ne.jp/lodgment/rec/007/617/r.asp",
+          "booking_system": "external_platform",
+          "booking_opens": "2026年は宿泊期間別に段階解禁(5/11-5/14の各9:00)"
         },
         {
           "name": "御来光館",
           "elevation": 3450,
           "note": "八合五勺，吉田・須走ルート最接近山頂的山屋",
-          "booking_url": "https://www.goraikoukan.jp/"
+          "booking_url": "https://www.goraikoukan.jp/",
+          "booking_system": "official_calendar"
         }
       ]
     },
@@ -1178,7 +1233,8 @@
           "name": "五色沼避難小屋",
           "elevation": 2490,
           "note": "五色沼與山頂之間的無人避難小屋，緊急避難用、不可預約住宿；本山以夜行日帰り為主，無營業山屋",
-          "booking_url": "https://yamap.com/mountains/252"
+          "booking_url": "https://yamap.com/mountains/252",
+          "booking_system": "none"
         }
       ]
     }
