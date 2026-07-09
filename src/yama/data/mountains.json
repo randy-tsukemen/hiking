@@ -233,6 +233,20 @@
             "adapter": "hotaka",
             "id": "10"
           }
+        },
+        {
+          "name": "北穂高小屋",
+          "note": "北穂高岳山頂直下、涸沢→北穂路線；床位少競爭激烈",
+          "booking_url": "https://www.yamatan.net/hut/kitahotakagoya",
+          "booking_system": "yamatan",
+          "yamatan_id": "kitahotakagoya"
+        },
+        {
+          "name": "横尾山荘",
+          "note": "横尾（上高地〜涸沢中繼點），有風呂；涸沢/槍沢兩線分岐",
+          "booking_url": "https://www.yamatan.net/hut/yokoosanso",
+          "booking_system": "yamatan",
+          "yamatan_id": "yokoosanso"
         }
       ]
     },
@@ -672,6 +686,13 @@
           "phone": "076-463-1835",
           "yamatan_id": "raichosawahutte",
           "booking_system": "yamatan"
+        },
+        {
+          "name": "立山室堂山荘",
+          "note": "室堂平、日本最古老山小屋遺構旁；8月週末実測全満",
+          "booking_url": "https://www.yamatan.net/hut/tateyamamurodosanso",
+          "booking_system": "yamatan",
+          "yamatan_id": "tateyamamurodosanso"
         }
       ]
     },
@@ -1205,6 +1226,62 @@
           "note": "八合五勺，吉田・須走ルート最接近山頂的山屋",
           "booking_url": "https://www.goraikoukan.jp/",
           "booking_system": "official_calendar"
+        },
+        {
+          "name": "白雲荘",
+          "note": "吉田ルート本八合目；8月週末実測全満、靠監控搶取消釋出",
+          "booking_url": "https://www.yamatan.net/hut/fujisanhachigomehakunso",
+          "booking_system": "yamatan",
+          "yamatan_id": "fujisanhachigomehakunso"
+        },
+        {
+          "name": "胸突江戸屋（上江戸屋）",
+          "note": "吉田・須走ルート本八合目合流點上",
+          "booking_url": "https://www.yamatan.net/hut/munatsukiedoya",
+          "booking_system": "yamatan",
+          "yamatan_id": "munatsukiedoya"
+        },
+        {
+          "name": "八合目江戸屋（下江戸屋）",
+          "note": "吉田/須走八合目，下山道分岐旁",
+          "booking_url": "https://www.yamatan.net/hut/edoya",
+          "booking_system": "yamatan",
+          "yamatan_id": "edoya"
+        },
+        {
+          "name": "鳥居荘",
+          "note": "吉田ルート本七合目",
+          "booking_url": "https://www.yamatan.net/hut/toriiso",
+          "booking_system": "yamatan",
+          "yamatan_id": "toriiso"
+        },
+        {
+          "name": "日の出館",
+          "note": "吉田ルート七合目",
+          "booking_url": "https://www.yamatan.net/hut/hinodekan",
+          "booking_system": "yamatan",
+          "yamatan_id": "hinodekan"
+        },
+        {
+          "name": "頂上富士館",
+          "note": "富士宮口頂上、日本最高所山屋；剣ヶ峰最近",
+          "booking_url": "https://www.yamatan.net/hut/chojofujikan",
+          "booking_system": "yamatan",
+          "yamatan_id": "chojofujikan"
+        },
+        {
+          "name": "万年雪山荘",
+          "note": "富士宮ルート九合三勺",
+          "booking_url": "https://www.yamatan.net/hut/mannenyukisanso",
+          "booking_system": "yamatan",
+          "yamatan_id": "mannenyukisanso"
+        },
+        {
+          "name": "池田館",
+          "note": "富士宮ルート八合目",
+          "booking_url": "https://www.yamatan.net/hut/ikedakan",
+          "booking_system": "yamatan",
+          "yamatan_id": "ikedakan"
         }
       ]
     },
