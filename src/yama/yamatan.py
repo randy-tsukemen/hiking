@@ -5,6 +5,12 @@
 房型（容量、公開期間）、匿名化預約記錄、容量調整、休業日——
 平台前端就是用「容量±調整−已訂人數」計算空位，本模組做同樣的計算。
 
+注意：受付開始**前**的日期也會回傳滿容量，看起來像整月有位——那是佔位顯示。
+受付窗口在同一 response 的 beforeReservationType（months/days）＋
+before_reservation_num ＋ canReserveStartDateTime（開賣時刻），
+例：涸沢ヒュッテ＝宿泊日 1 個月前 08:00、横尾山荘＝2 個月前 07:00。
+本模組據此標記未開賣日（HutDay.not_yet_open / opens_at）。
+
 僅讀取（與網頁瀏覽等價），不建立預約；輪詢請保持禮貌頻率。
 """
 
@@ -14,7 +20,7 @@ import calendar
 import json
 import urllib.parse
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, time, timedelta
 
 import httpx
 
@@ -38,6 +44,46 @@ def _trpc(proc: str, payload: dict, timeout: float = 30.0) -> dict:
     return body[0]["result"]["data"]["json"]
 
 
+def _months_before(d: date, n: int) -> date:
+    """d 的 n 個月前同日；該月無同日時取月底。
+
+    Yamatan 對「同日不存在」的實際規則未知；取月底會比任何合理解讀早，
+    寧可提早開始輪詢也不要把已開賣的日子誤標成未開賣。
+    """
+    y, m = d.year, d.month - n
+    while m < 1:
+        y, m = y - 1, m + 12
+    return date(y, m, min(d.day, calendar.monthrange(y, m)[1]))
+
+
+@dataclass
+class BookingWindow:
+    """受付窗口：宿泊日 num 個 unit（months/days）前的 open_time 起可訂。"""
+    unit: str
+    num: int
+    open_time: time
+
+    def opens_at(self, stay: date) -> datetime:
+        """該宿泊日的受付開始時刻（日本時間；本模組假設本機時區為 JST）。"""
+        if self.unit == "months":
+            open_day = _months_before(stay, self.num)
+        else:
+            open_day = stay - timedelta(days=self.num)
+        return datetime.combine(open_day, self.open_time)
+
+
+def _parse_window(ev: dict) -> BookingWindow | None:
+    unit = ev.get("beforeReservationType")
+    num = ev.get("before_reservation_num")
+    if unit not in ("months", "days") or not num:
+        return None
+    try:
+        t = time.fromisoformat(ev.get("canReserveStartDateTime") or "00:00:00")
+    except ValueError:
+        t = time(0, 0)
+    return BookingWindow(unit=unit, num=int(num), open_time=t)
+
+
 @dataclass
 class RoomDay:
     room: str
@@ -54,10 +100,16 @@ class HutDay:
     day: date
     holiday: bool
     rooms: list[RoomDay]
+    opens_at: datetime | None = None  # 受付開始時刻（None＝平台未提供窗口資訊）
 
     @property
     def remaining_total(self) -> int:
         return sum(r.remaining for r in self.rooms)
+
+    @property
+    def not_yet_open(self) -> bool:
+        """尚未開賣：此時空位數只是滿容量佔位，不代表可訂。"""
+        return bool(self.opens_at and datetime.now() < self.opens_at)
 
     @property
     def status(self) -> str:
@@ -65,6 +117,8 @@ class HutDay:
             return "休業"
         if not self.rooms:
             return "非營業期間"
+        if self.not_yet_open:
+            return f"未開賣（{self.opens_at:%-m/%-d %H:%M} 開賣）"
         if self.remaining_total == 0:
             return "満室"
         return f"残{self.remaining_total}"
@@ -75,6 +129,7 @@ def get_month_availability(hut_slug: str, year: int, month: int) -> list[HutDay]
     ev = _trpc("hutEvent.getEvent",
                {"hutId": hut_slug, "year": str(year), "month": f"{month:02d}"})
 
+    window = _parse_window(ev)
     rooms = [r for r in ev.get("rooms", []) if r.get("publish", True)]
     # 停更偵測：所有房型的公開期間都早於查詢年份 → 山屋已離開平台
     ends = [r.get("public_end_date") or "" for r in rooms]
@@ -125,7 +180,9 @@ def get_month_availability(hut_slug: str, year: int, month: int) -> list[HutDay]
             day_rooms.append(RoomDay(
                 room=r.get("name", "?"), capacity=cap,
                 booked=booked.get((r["id"], ds), 0)))
-        out.append(HutDay(day=d, holiday=ds in holidays, rooms=day_rooms))
+        out.append(HutDay(
+            day=d, holiday=ds in holidays, rooms=day_rooms,
+            opens_at=window.opens_at(d) if window and day_rooms else None))
     return out
 
 
