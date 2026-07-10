@@ -19,7 +19,7 @@ import json
 import os
 import subprocess
 import sys
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from datetime import date
 from pathlib import Path
 
@@ -34,7 +34,7 @@ _ROOM_OK = ("○", "RQ", "WT")  # × 以外都視為「出現機會」
 @dataclass
 class Watch:
     id: int
-    type: str  # room | weather | hut | hut
+    type: str  # room | weather | hut
     # room
     course_no: int | None = None
     depart_date: str | None = None
@@ -48,19 +48,20 @@ class Watch:
     mountain: str | None = None
     min_score: int = 75  # ◎
     consecutive_days: int = 1
-    # hut（山屋官網直查）
-    hut_url: str | None = None
-    stay_date: str | None = None
-    hut_name: str | None = None
     # 狀態
     last_state: str = ""
     created: str = field(default_factory=lambda: date.today().isoformat())
 
 
+_FIELDS = {f.name for f in fields(Watch)}
+
+
 def _load() -> list[Watch]:
     try:
         data = json.loads(_WATCH_FILE.read_text())
-        return [Watch(**w) for w in data]
+        # 只取現存欄位：舊版檔案可能留有已移除的鍵（如 hut_url）
+        return [Watch(**{k: v for k, v in w.items() if k in _FIELDS})
+                for w in data]
     except (OSError, ValueError, TypeError):
         return []
 
@@ -78,25 +79,6 @@ def add_room_watch(course_no: int, depart_date: str, party: int = 1) -> Watch:
         id=max((x.id for x in watches), default=0) + 1,
         type="room", course_no=course_no,
         depart_date=depart_date.replace("/", "-"), party=party,
-    )
-    watches.append(w)
-    _save(watches)
-    return w
-
-
-def add_hut_watch(url: str, stay_date: str, name: str | None = None) -> Watch:
-    from .hutdirect import check_hut, detect_provider
-
-    if detect_provider(url) is None:
-        raise ValueError("不支援的預約系統網址"
-                         "（目前支援 tenawan.ne.jp / d-reserve.jp / yamatan.net）")
-    stay = stay_date.replace("/", "-")
-    if name is None:  # 加入時查一次，順便取得山屋名並記下目前狀態
-        name = check_hut(url, stay).hut
-    watches = _load()
-    w = Watch(
-        id=max((x.id for x in watches), default=0) + 1,
-        type="hut", hut_url=url, stay_date=stay, hut_name=name,
     )
     watches.append(w)
     _save(watches)
@@ -146,8 +128,6 @@ def describe(w: Watch) -> str:
                 f"／需 {w.min_remaining} 位")
     if w.type == "room":
         return f"#{w.id} 房間：course {w.course_no}／{w.depart_date} 出發／{w.party} 人"
-    if w.type == "hut":
-        return f"#{w.id} 山屋：{w.hut_name}／{w.stay_date} 泊"
     return (f"#{w.id} 天氣：{w.mountain}／適宜度 ≥{w.min_score}"
             f"／連續 {w.consecutive_days} 天")
 
@@ -170,22 +150,6 @@ def _check_room(w: Watch) -> tuple[str, str, bool]:
                 f"&p_course_no={w.course_no}&p_date={w.depart_date.replace('-', '/')}")
         return sig, desc, True
     return sig, f"{r.title or w.course_no}：房間仍為 " + sig, False
-
-
-def _check_hut(w: Watch) -> tuple[str, str, bool]:
-    from .hutdirect import check_hut
-
-    r = check_hut(w.hut_url, w.stay_date)
-    sig = r.signature()
-    open_rooms = [x for x in r.rooms if x.available]
-    if open_rooms:
-        lines = [f"🎉 {r.hut} {w.stay_date} 泊出現空位！"]
-        lines += [f"・{x.room}：{x.status}" for x in open_rooms[:8]]
-        lines.append(f"預約：{w.hut_url}")
-        return sig, "\n".join(lines), True
-    if not r.rooms:
-        return sig, f"{r.hut}：{w.stay_date} 無販售中房型", False
-    return sig, f"{r.hut}：{w.stay_date} 全房型仍滿房/停售", False
 
 
 def _check_hut(w: Watch) -> tuple[str, str, bool]:
