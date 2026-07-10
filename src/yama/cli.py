@@ -112,20 +112,6 @@ def watch_room(
 
 @watch_app.command("hut")
 def watch_hut(
-    url: str = typer.Argument(..., help="山屋官網預約頁連結"
-                              "（tenawan.ne.jp / d-reserve.jp / yamatan.net）"),
-    stay: str = typer.Argument(..., help="入住日 YYYY-MM-DD"),
-) -> None:
-    """監控山屋官網空房：滿房/停售 → 出現可訂房型時通知。"""
-    from .watch import add_hut_watch, describe
-
-    w = add_hut_watch(url, stay)
-    console.print(f"已加入監控：{describe(w)}")
-    console.print("用 `yama watch run` 檢查；排程請見 `yama watch run --help`")
-
-
-@watch_app.command("hut")
-def watch_hut(
     name: str = typer.Argument(..., help="山屋名"),
     stay_date: str = typer.Argument(..., help="宿泊日 YYYY-MM-DD"),
     party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="需要幾位"),
@@ -259,6 +245,104 @@ def hut(
                       f"{dd.summary[:64]}{'[/bold]' if wk else ''}")
 
 
+@app.command("snipe")
+def snipe_cmd(
+    name: str = typer.Argument(..., help="山屋名（Yamatan 系）"),
+    stay: str = typer.Argument(..., help="宿泊日 YYYY-MM-DD"),
+    party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="需要幾位"),
+    no_browser: bool = typer.Option(False, "--no-browser", help="命中時不開瀏覽器"),
+    timeout: int = typer.Option(10, "--timeout", help="開賣後最多輪詢幾分鐘"),
+) -> None:
+    """開賣狙擊：等到受付開始時刻，一有空位立刻通知並開啟預約頁（不自動下訂）。
+
+    開賣前先跑起來放著，例：涸沢ヒュッテ是宿泊日 1 個月前 08:00 開賣，
+    想搶 10/10 就在 9/10 早上執行 `yama snipe 涸沢ヒュッテ 2026-10-10`。
+    """
+    from datetime import date as _date
+
+    from .hut_avail import ensure_adapters_loaded, hut_adapter_config
+    from .matcher import MountainDB
+    from .snipe import snipe
+
+    ensure_adapters_loaded()
+    cfg, full = None, name
+    for m in MountainDB.load().mountains:
+        for h in m.huts:
+            if name in h["name"]:
+                c = hut_adapter_config(h)
+                if c:
+                    cfg, full = c, h["name"]
+    if cfg is None or cfg[0] != "yamatan":
+        console.print(f"[red]「{name}」不在 Yamatan 平台上，無法狙擊"
+                      "（開賣時刻資訊只有 Yamatan 提供）[/red]")
+        raise typer.Exit(1)
+    ok = snipe(cfg[1], full, _date.fromisoformat(stay.replace("/", "-")),
+               party=party, open_browser=not no_browser, timeout_min=timeout,
+               echo=console.print)
+    raise typer.Exit(0 if ok else 1)
+
+
+@app.command("book")
+def book_cmd(
+    name: str = typer.Argument(None, help="山屋名（Yamatan 系）"),
+    stay: str = typer.Argument(None, help="宿泊日 YYYY-MM-DD"),
+    room: str = typer.Option(None, "--room", help="指定房型（如 2名様）"),
+    plan: str = typer.Option(None, "--plan",
+                             help="プラン關鍵字（預設優先找 2食/夕食＋朝食）"),
+    men: int = typer.Option(1, "--men", "-m", min=0, max=8, help="大人（男）人數"),
+    women: int = typer.Option(0, "--women", "-w", min=0, max=8,
+                              help="大人（女）人數"),
+    opt: list[str] = typer.Option(None, "--opt",
+                                  help="選配 關鍵字=數量（可重複），"
+                                       "如 --opt 朝弁当=1 --opt 昼弁当=1"),
+    setup: bool = typer.Option(False, "--setup",
+                               help="首次設定：開視窗手動 Google 登入＋建住客資料範本"),
+) -> None:
+    """（實驗性）自動走預約流程到確定前一步：選日選房、自動填表，最後一下由人點。
+
+    需要 playwright：`uv run --group book yama book …`。
+    首次先 `yama book --setup` 在視窗裡用 Google 登入一次（session 會保存）。
+    """
+    from datetime import date as _date
+
+    from .book import BookError, book, setup as book_setup
+    from .hut_avail import ensure_adapters_loaded, hut_adapter_config
+    from .matcher import MountainDB
+
+    try:
+        if setup:
+            book_setup(echo=console.print)
+            return
+        if not name or not stay:
+            console.print("[red]用法：yama book <山屋名> <宿泊日>（或 --setup）[/red]")
+            raise typer.Exit(1)
+        ensure_adapters_loaded()
+        cfg, full = None, name
+        for m in MountainDB.load().mountains:
+            for h in m.huts:
+                if name in h["name"]:
+                    c = hut_adapter_config(h)
+                    if c:
+                        cfg, full = c, h["name"]
+        if cfg is None or cfg[0] != "yamatan":
+            console.print(f"[red]「{name}」不在 Yamatan 平台上，"
+                          "無法自動預約[/red]")
+            raise typer.Exit(1)
+        opts = {}
+        for o in opt or []:
+            kw, _, n = o.partition("=")
+            opts[kw.strip()] = int(n or "1")
+        book(cfg[1], full, _date.fromisoformat(stay.replace("/", "-")),
+             room=room, plan=plan, men=men, women=women, opts=opts,
+             echo=console.print)
+    except BookError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(1)
+    except KeyboardInterrupt:
+        console.print("已中止")
+        raise typer.Exit(130)
+
+
 @app.command("rooms")
 def rooms(
     course_no: int = typer.Argument(..., help="方案編號（預約連結中的 course_no）"),
@@ -326,7 +410,8 @@ def plan(
     _output(md, out)
 
 
-_COMMANDS = {"list", "weekend", "best", "plan", "rooms", "hut", "watch", "doctor"}
+_COMMANDS = {"list", "weekend", "best", "plan", "rooms", "hut", "watch",
+             "doctor", "snipe", "book"}
 
 
 def run() -> None:
