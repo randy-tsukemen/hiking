@@ -14,9 +14,12 @@ def get_month(hut_id: str, year: int, month: int) -> list[DayStatus]:
             # 開賣前的空位數是滿容量佔位——標未開賣、不列房型，以免誤判可訂
             out.append(DayStatus(day=d.day, rooms=[], note=d.status))
             continue
-        rooms = [RoomStatus(room=r.room,
-                            status=f"残{r.remaining}" if r.capacity else "×")
-                 for r in d.rooms]
+        if d.past_deadline and not d.holiday and d.rooms:
+            out.append(DayStatus(day=d.day, rooms=[], note="受付締切"))
+            continue
+        # RoomStatus.ok 只看 status 字串：残N/残N室 → ok、
+        # 要電話/×鎖定/満 → not ok（不能線上訂就不算「有機會」）
+        rooms = [RoomStatus(room=r.room, status=r.label) for r in d.rooms]
         note = "休業" if d.holiday else ("非營業期間" if not d.rooms else "")
         out.append(DayStatus(day=d.day, rooms=rooms, note=note))
     return out

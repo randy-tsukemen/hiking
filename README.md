@@ -130,6 +130,24 @@ yama watch run                         # 檢查一輪（給 cron 呼叫）
 0 * * * * cd /path/to/hiking && /opt/homebrew/bin/uv run yama watch run
 ```
 
+## 釋出獵手（`yama hunt`）— 長駐輪詢多個日期，命中自動進預約流程
+
+搶手山屋（涸沢ヒュッテ等）滿房後只能等取消釋出。`watch` 一小時一次盯單一日期、
+`snipe` 只搶開賣瞬間；**`hunt` 長駐輪詢所有目標週幾的日期**（預設週六），
+每 15〜30 分鐘掃一輪，一有空位釋出立刻通知＋自動開瀏覽器走預約流程到
+「最終確定前」一步——最後一下由人點，**絕不自動下訂**：
+
+```sh
+yama hunt 涸沢ヒュッテ --party 2                  # 盯所有已開賣的週六
+yama hunt 涸沢ヒュッテ --weekday 日 --interval 15  # 改盯週日、15 分鐘一輪
+uv run --group book yama hunt 涸沢ヒュッテ --party 2 --room 2名様  # 含自動預約
+```
+
+- 自動預約需要 playwright（`--group book`）＋首次 `yama book --setup` 登入；
+  沒裝或用 `--no-book` 時退回「通知＋開預約頁」
+- 未開賣的日期會標開賣時刻（那種請用 `yama snipe` 搶開賣瞬間）
+- 每輪對每個月份只打 1 次查詢（禮貌輪詢），間隔最短 5 分鐘
+
 ## 報告內容
 
 `yama <山名>` 產出的報告包含：

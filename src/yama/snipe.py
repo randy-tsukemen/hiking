@@ -27,8 +27,7 @@ def _fetch_day(hut_slug: str, stay: date) -> HutDay | None:
 
 
 def _hits(day: HutDay, party: int) -> list[str]:
-    return [f"{r.room}：残{r.remaining}"
-            for r in day.rooms if r.remaining >= party]
+    return [f"{r.room}：{r.label}" for r in day.fits(party)]
 
 
 def snipe(hut_slug: str, hut_name: str, stay: date, party: int = 1,
@@ -60,7 +59,8 @@ def snipe(hut_slug: str, hut_name: str, stay: date, party: int = 1,
         if hits:
             return found(hits)
         echo(f"{hut_name} {stay}：{day.status}（已開賣）。"
-             f"等釋出請用 `yama watch hut {hut_name} {stay}`")
+             f"等取消釋出請用 `yama hunt {hut_name}`（長駐輪詢）"
+             f"或 `yama watch hut {hut_name} {stay}`（cron 每小時）")
         return False
 
     if now < opens - timedelta(hours=12):

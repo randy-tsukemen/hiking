@@ -282,6 +282,59 @@ def snipe_cmd(
     raise typer.Exit(0 if ok else 1)
 
 
+@app.command("hunt")
+def hunt_cmd(
+    name: str = typer.Argument(..., help="山屋名（Yamatan 系）"),
+    weekday: str = typer.Option("六", "--weekday", help="盯哪個星期（一〜日/土）"),
+    interval: float = typer.Option(30, "--interval", "-i", min=5,
+                                   help="輪詢間隔（分鐘，最短 5）"),
+    party: int = typer.Option(1, "--party", "-p", min=1, max=8, help="需要幾位"),
+    no_book: bool = typer.Option(False, "--no-book",
+                                 help="命中時只通知＋開預約頁（不自動走預約流程）"),
+    room: str = typer.Option(None, "--room", help="自動預約時指定房型（如 2名様）"),
+    plan: str = typer.Option(None, "--plan", help="自動預約時的プラン關鍵字"),
+    men: int = typer.Option(1, "--men", "-m", min=0, max=8, help="大人（男）人數"),
+    women: int = typer.Option(0, "--women", "-w", min=0, max=8,
+                              help="大人（女）人數"),
+) -> None:
+    """釋出獵手：長駐輪詢所有目標週幾的日期，取消釋出即通知＋自動進預約流程。
+
+    watch=每小時單日、snipe=開賣瞬間，hunt=已開賣但満室的多個日期，
+    每 15〜30 分鐘掃一輪等取消。命中預設自動開瀏覽器走到最終確定前
+    （需 `uv run --group book`，首次先 `yama book --setup` 登入），
+    最後一下由人點，絕不自動下訂。Ctrl-C 中止。
+    """
+    from .hunt import hunt, parse_weekday
+    from .hut_avail import ensure_adapters_loaded, hut_adapter_config
+    from .matcher import MountainDB
+
+    ensure_adapters_loaded()
+    cfg, full = None, name
+    for m in MountainDB.load().mountains:
+        for h in m.huts:
+            if name in h["name"]:
+                c = hut_adapter_config(h)
+                if c:
+                    cfg, full = c, h["name"]
+    if cfg is None or cfg[0] != "yamatan":
+        console.print(f"[red]「{name}」不在 Yamatan 平台上，無法獵取釋出"
+                      "（開賣時刻與逐房庫存只有 Yamatan 提供）[/red]")
+        raise typer.Exit(1)
+    try:
+        wd = parse_weekday(weekday)
+    except ValueError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(1)
+    try:
+        hunt(cfg[1], full, weekday=wd, party=party, interval_min=interval,
+             auto_book=not no_book,
+             book_kwargs={"room": room, "plan": plan,
+                          "men": men, "women": women},
+             echo=console.print)
+    except KeyboardInterrupt:
+        console.print("已中止")
+
+
 @app.command("book")
 def book_cmd(
     name: str = typer.Argument(None, help="山屋名（Yamatan 系）"),
@@ -411,7 +464,7 @@ def plan(
 
 
 _COMMANDS = {"list", "weekend", "best", "plan", "rooms", "hut", "watch",
-             "doctor", "snipe", "book"}
+             "doctor", "snipe", "book", "hunt"}
 
 
 def run() -> None:

@@ -348,8 +348,8 @@ def _wait_for_open(page, hut_slug: str, stay: date, room: str | None,
         _time.sleep(min(60.0, r - 15))
     deadline = opens + timedelta(minutes=10)
     echo(f"  開賣！開始重載日曆搶位（至 {deadline:%H:%M} 為止）…")
-    # 不用 API 的殘量判斷——adapter 對個室（private_rooms 單位制）會低估，
-    # 直接重載日曆找可點房型（與人手動 F5 等價、判斷與點擊同一來源）
+    # 開賣瞬間直接重載日曆找可點房型——判斷與點擊同一來源，
+    # 不受 API 與前端渲染的時間差影響（與人手動 F5 等價）
     while datetime.now() < deadline:
         page.reload(wait_until="domcontentloaded")
         try:

@@ -85,7 +85,10 @@ uvx --from git+https://github.com/randy-tsukemen/hiking yama <指令>
 - **山屋空位是雙渠道**：巴士套裝（`yama rooms`）與山屋官網（`yama hut <山屋名>
   <YYYY-MM>`，Yamatan 平台）是**分開的庫存**——套裝満房時官網可能有位、
   反之亦然（實例：雷鳥沢 8/8 官網満室但套裝 RQ 可申請）。使用者關心某山屋時
-  兩邊都查。監控：`yama watch hut <山屋名> <宿泊日> [--party N]`。
+  兩邊都查。監控：`yama watch hut <山屋名> <宿泊日> [--party N]`（cron 單日）；
+  已開賣但満室想等取消釋出用 `yama hunt <山屋名> [--weekday 六] [--interval 30]
+  [--party N]`（長駐輪詢所有目標週幾，命中通知＋自動走預約流程到最終確定前，
+  絕不自動下訂；`--no-book` 只通知＋開預約頁）。
   可查官網空位的山屋（yama hut / watch hut）：Yamatan 系 8 家（涸沢ヒュッテ、
   蝶ヶ岳ヒュッテ、中房温泉、こもれび山荘、仙丈小屋、馬の背ヒュッテ、雷鳥沢ヒュッテ）、
   tenawan 系（雷鳥荘、白馬岳頂上宿舎、太子舘）、燕山荘系（燕山荘、大天荘、
