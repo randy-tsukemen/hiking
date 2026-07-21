@@ -77,6 +77,10 @@ def rate_day(fc: DayForecast, difficulty: str = "中級") -> Suitability:
     score = 100
     reasons: list[str] = []
 
+    # 預報末端（第 16 天）Open-Meteo 可能缺欄位
+    if None in (fc.rain_prob, fc.precip_mm, fc.wind_max, fc.t_min, fc.weather_code):
+        return Suitability(0, "—", "資料不全")
+
     if fc.weather_code >= 95:
         return Suitability(0, "×", "雷雨風險")
 
