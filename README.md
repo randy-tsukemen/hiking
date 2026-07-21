@@ -5,6 +5,7 @@
 - **毎日あるぺん号巴士方案**（東京發，即時查詢：價格、出發日、催行狀態、直達預約連結）
 - **山屋住宿**（巴士＋山屋套裝方案 + 各山域主要山屋官方預約連結）
 - **套裝方案的房間空位**（巴士有位≠房間有位——不用走預約流程就能查逐晚房間狀態）
+- **山屋官網空位**（27 家山屋逐日空位；搶開賣、等釋出、自動填預約表單一應俱全）
 - **Yamap 模範路線數據**（每條路線的距離、累積爬升/下降、標準時間、
   コース定数難度數值與体力度，一眼看懂路線多硬）
 - **山頂天氣預報**（Open-Meteo 16 天，依山頂標高修正，附登山適宜度 ◎○△×）
@@ -48,9 +49,10 @@ Claude 會透過 uvx 從本 repo 執行 CLI（免 clone、免安裝，只需要 
 }
 ```
 
-提供 6 個工具：`list_mountains`、`get_mountain_info`（含 Yamap 路線難度數據）、
+提供 8 個工具：`list_mountains`、`get_mountain_info`（含 Yamap 路線難度數據）、
 `get_weather`（16 天適宜度）、`get_bus_options`（含預約連結）、
-`rank_mountains_by_weather`、`check_hut_room_availability`（房間空位實查）。
+`rank_mountains_by_weather`、`check_hut_room_availability`（套裝房間空位實查）、
+`check_hut_official_availability`（山屋官網空位）、`verify_trip_candidate`（行程事實查證）。
 
 同一份資料層有三種介面：CLI（人用）、Claude Code plugin（Claude Code 用）、
 MCP（任何 Agent 用）——挑適合你的。
@@ -76,9 +78,11 @@ uv run yama weekend             # 這週末適合去哪些山？（天氣排名 
 uv run yama weekend --no-bus    # 只看天氣，跳過巴士查詢（較快）
 uv run yama best --days 14      # 未來 14 天內每座山的最佳登山日排名
 
-uv run yama hut 燕山荘 2026-09      # 山屋官網逐日空位（15 家：Yamatan/tenawan/燕山荘系/穂高岳山荘）
+uv run yama hut 燕山荘 2026-09      # 山屋官網逐日空位（27 家：Yamatan/tenawan/燕山荘系/穂高岳山荘/富士山）
 uv run yama rooms 8574 2026-07-10   # 查套裝方案的山屋「房間」空位（見下方說明）
 uv run yama watch room 8574 2026-07-10  # 監控空房釋出，變化時通知（見下方說明）
+uv run yama snipe 涸沢ヒュッテ 2026-10-10   # 搶開賣瞬間：受付開始時刻密集輪詢（見下方說明）
+uv run yama hunt 涸沢ヒュッテ --party 2     # 等取消釋出：長駐輪詢多個日期（見下方說明）
 uv run yama list                # 列出收錄的山岳
 ```
 
@@ -116,6 +120,7 @@ $ uv run yama rooms 8574 2026-07-10
 
 ```sh
 yama watch room 8574 2026-07-10        # 監控套裝房間：×→○/RQ 釋出時通知
+yama watch hut 涸沢ヒュッテ 2026-10-17 --party 4  # 監控山屋官網：出現 ≥ 人數空位時通知
 yama watch weather 立山 --score 75 --days 2   # 出現連 2 天◎的窗口時通知
 yama watch list / remove <id>          # 管理監控項
 yama watch run                         # 檢查一輪（給 cron 呼叫）
@@ -129,6 +134,19 @@ yama watch run                         # 檢查一輪（給 cron 呼叫）
 ```
 0 * * * * cd /path/to/hiking && /opt/homebrew/bin/uv run yama watch run
 ```
+
+## 開賣狙擊（`yama snipe`）— 搶 Yamatan 山屋的受付開始瞬間
+
+Yamatan 系山屋是滾動開賣（例：涸沢ヒュッテ＝宿泊日 1 個月前 08:00、
+横尾山荘＝2 個月前 07:00），熱門日期開賣幾分鐘內就滿。`snipe` 先跑起來放著，
+開賣時刻一到自動密集輪詢，一有空位立刻通知＋開啟預約頁（不自動下訂）：
+
+```sh
+yama snipe 涸沢ヒュッテ 2026-10-10 --party 2   # 9/10 早上跑起來，08:00 開賣即搶
+```
+
+`yama hut` 對未開賣的日期會標示開賣時刻（「未開賣（9/10 08:00 開賣）」），
+方便決定哪天要來搶。
 
 ## 釋出獵手（`yama hunt`）— 長駐輪詢多個日期，命中自動進預約流程
 
@@ -147,6 +165,27 @@ uv run --group book yama hunt 涸沢ヒュッテ --party 2 --room 2名様  # 含
   沒裝或用 `--no-book` 時退回「通知＋開預約頁」
 - 未開賣的日期會標開賣時刻（那種請用 `yama snipe` 搶開賣瞬間）
 - 每輪對每個月份只打 1 次查詢（禮貌輪詢），間隔最短 5 分鐘
+
+三者分工：`snipe`＝開賣瞬間（秒級、單一日期）、`hunt`＝等取消釋出
+（15〜30 分鐘級、多日期）、`watch hut`＝cron 每小時的單日長期監控。
+
+## 自動預約（`yama book`）— 實驗性：自動填表到「確定前」一步
+
+Yamatan 系山屋的預約流程（選日→選房→選プラン→人數→選配→同意條款）
+全部自動完成，**停在最終確定鍵前**由人檢查後親手點下——絕不自動下訂，
+信用卡資訊也一律不代填：
+
+```sh
+uv run --group book yama book --setup            # 首次：開視窗手動 Google 登入一次
+uv run --group book yama book 涸沢ヒュッテ 2026-10-17 -m 3 -w 1 --opt 弁当=4
+```
+
+- `-m/-w` 大人男女人數；`--room` 指定房型（如 `4名様`）；`--plan` プラン關鍵字
+  （預設優先找 2食/夕食＋朝食）；`--opt 關鍵字=數量` 加購選配（朝弁当、昼弁当…）
+- 住客資料編輯 `~/.yama_cache/booking_profile.json`（空白時表單留白給人手動填）；
+  login session 保存於 `~/.yama_cache/chrome-profile`
+- 對未開賣的日期會待機到受付開始自動搶（限開賣前 12 小時內；更遠會提示改天跑）
+- 每步截圖存 `~/.yama_cache/book_logs/`，確認頁有必填問卷欄（如翌日路線）需人補填
 
 ## 報告內容
 
@@ -172,6 +211,7 @@ uv run --group book yama hunt 涸沢ヒュッテ --party 2 --room 2名様  # 含
 |---|---|---|
 | 巴士方案 | [毎日あるぺん号](https://bus.maitabi.jp/)（毎日新聞旅行） | 公開 JSON API 即時查詢 |
 | 套裝房間空位 | travel-answer.ne.jp（毎日あるぺん号預約系統） | 模擬預約流程前兩步解析空位表 |
+| 山屋官網空位 | [Yamatan](https://www.yamatan.net/)、tenawan、燕山荘系、穂高岳山荘 | 各系統一個 adapter，與官網前端同邏輯計算 |
 | 天氣 | [Open-Meteo](https://open-meteo.com/) | 免費 API，山頂座標＋標高，快取 1 小時 |
 | 路線數據 | [Yamap](https://yamap.com/) 模範路線 | 山岳頁 SSR 資料即時解析 |
 | 山岳・山屋 | 內建精選資料庫 `src/yama/data/mountains.json` | 人工整理，含 Yamap 連結 |
