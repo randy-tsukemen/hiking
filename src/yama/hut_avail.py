@@ -30,6 +30,8 @@ class RoomStatus:
         s = self.status
         if s.startswith("残"):
             return not s.startswith("残0")
+        if s and s[0].isdigit():  # tenawan「1室」等殘數表記
+            return s[0] != "0"
         if any(s.startswith(m) for m in _OK_MARKS):
             return True
         return False
