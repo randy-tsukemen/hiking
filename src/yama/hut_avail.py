@@ -97,10 +97,13 @@ def booking_page(adapter: str, hut_id: str) -> str:
         return f"https://enzanso-reservation.jp/reserve/enz0010.php?p={hut_id}&type=10"
     if adapter == "hotaka":
         return "https://www.hotakadakesanso.com/reservation"
+    if adapter == "fujimori":
+        return ("https://akadake.sakura.ne.jp/fj/reservation/status.php"
+                f"?hotel_id={hut_id}")
     return ""
 
 
 def ensure_adapters_loaded() -> None:
     """匯入所有 adapter 模組以完成註冊。"""
-    from . import enzanso, hotaka, tenawan  # noqa: F401
+    from . import enzanso, fujimori, hotaka, tenawan  # noqa: F401
     from . import yamatan_bridge  # noqa: F401
