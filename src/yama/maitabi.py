@@ -25,9 +25,10 @@ _DATE_RE = re.compile(r"(\d{4})年(\d{2})月(\d{2})日")
 
 
 def _norm(s: str) -> str:
-    """全形/半形與 ヶ/ケ 正規化，供名稱比對。"""
+    """全形/半形、ヶ/ケ、の/ノ 正規化，供名稱比對（如 一の越山荘 ↔ 一ノ越山荘）。"""
     s = unicodedata.normalize("NFKC", s)
-    return s.replace("ヶ", "ケ").replace("が岳", "ケ岳").replace("ガ岳", "ケ岳")
+    s = s.replace("ヶ", "ケ").replace("が岳", "ケ岳").replace("ガ岳", "ケ岳")
+    return s.replace("の", "ノ")
 
 
 def parse_ja_date(s: str) -> date | None:
@@ -52,9 +53,13 @@ class Tour:
 
     @property
     def direction(self) -> str:
-        """去程 / 回程 / 來回（依標題的〈往路〉〈復路〉往復 判斷）。"""
+        """去程 / 回程 / 來回（依標題的〈往路〉〈復路〉往復／日帰り 判斷）。
+
+        「夜行日帰り」是夜發當日來回，且標題可能同時含 往路/復路（座席註記），
+        故須先於 往路/復路 判斷。
+        """
         t = self.title
-        if "往復" in t:
+        if "往復" in t or "日帰り" in t:
             return "來回"
         if "往路" in t:
             return "去程"
@@ -158,12 +163,16 @@ class MaitabiClient:
         month: int,
         area_id: int,
         day: int | None = None,
-        max_pages: int = 5,
+        max_pages: int | None = None,
     ) -> list[Tour]:
-        """搜尋方案。每筆 = course × 出發日；指定 day 可縮小為單日的 course 清單。"""
+        """搜尋方案。每筆 = course × 出發日；指定 day 可縮小為單日的 course 清單。
+
+        注意：API 帶 day 過濾時會漏掉部分座席變體 course（如 4列/4列 的 -01 系列），
+        要完整清單請不帶 day 全月列舉。max_pages=None 表示依 count 翻頁到底。
+        """
         tours: list[Tour] = []
         page = 1
-        while page <= max_pages:
+        while max_pages is None or page <= max_pages:
             params: dict = {
                 "departure": DEPARTURE_TOKYO,
                 "month": month,
@@ -190,14 +199,15 @@ class MaitabiClient:
             page += 1
         return tours
 
-    def list_courses(
-        self, month: int, area_id: int, sample_days: list[int]
-    ) -> list[Tour]:
-        """取得該山域的不重複 course 清單（以幾個代表日抽樣，去重 course_cd）。"""
+    def list_courses(self, month: int, area_id: int) -> list[Tour]:
+        """取得該山域的不重複 course 清單（全月列舉後去重 course_cd）。
+
+        不用帶 day 的抽樣：API 的 day 過濾會漏掉部分座席變體（實測 上高地
+        S101C03-01〈往復／現地1泊〉4列/4列 等在單日搜尋中不出現）。
+        """
         seen: dict[str, Tour] = {}
-        for d in sample_days:
-            for t in self.search_tours(month, area_id, day=d):
-                seen.setdefault(t.course_cd, t)
+        for t in self.search_tours(month, area_id):
+            seen.setdefault(t.course_cd, t)
         return list(seen.values())
 
     # -- 方案詳細 ----------------------------------------------------------

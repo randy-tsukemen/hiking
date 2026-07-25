@@ -101,22 +101,6 @@ def _course_section(
     return lines
 
 
-def _pick_sample_days(month: int, today: date) -> list[int]:
-    """抽樣日：涵蓋不同星期（部分 course 只在週五／週末開行）。
-
-    從查詢起點起取最近的 週三、五、六、日 各一天。
-    """
-    year = today.year if month >= today.month else today.year + 1
-    start = today if month == today.month else date(year, month, 1)
-    picked: dict[int, int] = {}  # weekday -> day
-    d = start
-    while d.month == month and len(picked) < 4:
-        if d.weekday() in (2, 4, 5, 6):  # 三五六日
-            picked.setdefault(d.weekday(), d.day)
-        d += timedelta(days=1)
-    return sorted(picked.values()) or [start.day]
-
-
 @dataclass
 class BusData:
     """一座山在某月份的巴士方案結構化資料（CLI 與 bot 共用）。"""
@@ -138,15 +122,14 @@ def fetch_bus_data(
     today: date,
     max_details: int = _MAX_DETAILS,
 ) -> BusData:
-    """解析山域→抽樣→抓 course→分組排序→抓 detail（含預約連結）。"""
+    """解析山域→全月列舉 course→分組排序→抓 detail（含預約連結）。"""
     area_ids = client.resolve_area_ids(month, mountain.maitabi_area_names)
     if not area_ids:
         return BusData()
 
     courses: dict[str, Tour] = {}
-    sample_days = _pick_sample_days(month, today)
     for aid in area_ids:
-        for t in client.list_courses(month, aid, sample_days):
+        for t in client.list_courses(month, aid):
             courses.setdefault(t.course_cd, t)
     tours = list(courses.values())
     # 過濾關鍵字含資料庫山屋名——套裝方案標題常只有山屋名（雷鳥荘1泊〈往復〉）
@@ -311,8 +294,9 @@ def _has_bookable_outbound(
     try:
         area_ids = client.resolve_area_ids(target.month, m.maitabi_area_names)
         for aid in area_ids:
+            # max_pages=4：大山域（白馬八方等）單日可達 50+ 筆，2 頁（40 筆）會截斷
             tours = client.search_tours(
-                target.month, aid, day=target.day, max_pages=2
+                target.month, aid, day=target.day, max_pages=4
             )
             unavailable = ("満席", "受付終了", "キャンセル待ち", "催行中止")
             for t in tours:
