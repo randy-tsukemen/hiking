@@ -19,10 +19,12 @@
 
 from __future__ import annotations
 
+from .japan_time import japan_now
+
 import time as _time
 import webbrowser
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from .yamatan import HutDay, booking_url, get_month_availability
 
@@ -111,7 +113,7 @@ def hunt(hut_slug: str, hut_name: str, *, weekday: int = 5, party: int = 1,
     rnd = 0
     while True:
         rnd += 1
-        today = date.today()
+        today = japan_now().date()
         targets = target_dates(weekday, today, horizon_days)
         if not targets:
             echo("範圍內沒有目標日期，結束")
@@ -129,7 +131,7 @@ def hunt(hut_slug: str, hut_name: str, *, weekday: int = 5, party: int = 1,
                 if not st.reported_open:
                     st.reported_open = True
                     echo(f"  {stay}（{_WEEKDAYS[stay.weekday()]}）尚未開賣"
-                         f"（{day.opens_at:%-m/%-d %H:%M} 開賣）——開賣要搶請另跑"
+                         f"（{day.opens_at:%m/%d %H:%M} 開賣）——開賣要搶請另跑"
                          f" `yama snipe {hut_name} {stay}`")
                 continue
             if day.past_deadline:
@@ -161,7 +163,7 @@ def hunt(hut_slug: str, hut_name: str, *, weekday: int = 5, party: int = 1,
                  f"{booking_url(hut_slug)}")
             for line in already:
                 echo(f"   ・{line}")
-        echo(f"[{datetime.now():%H:%M}] 第 {rnd} 輪：盯 {watchable} 個已開賣的"
+        echo(f"[{japan_now():%H:%M}] 第 {rnd} 輪：盯 {watchable} 個已開賣的"
              f"{_WEEKDAYS[weekday]}曜日｜" + "｜".join(summary[:8]))
         if watchable == 0 and rnd == 1:
             # 全部未開賣/不可訂時仍繼續輪（開賣後會自動納入監視）

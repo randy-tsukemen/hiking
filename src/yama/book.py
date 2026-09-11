@@ -17,10 +17,12 @@ Google 登入無法自動化（bot 偵測會擋帳密自動輸入），所以採
 
 from __future__ import annotations
 
+from .japan_time import japan_now
+
 import json
 import re
 import time as _time
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 _CACHE = Path.home() / ".yama_cache"
@@ -74,6 +76,7 @@ def _launch(p, headless: bool = False):
     _PROFILE_DIR.mkdir(parents=True, exist_ok=True)
     return p.chromium.launch_persistent_context(
         str(_PROFILE_DIR), channel="chrome", headless=headless,
+        timezone_id="Asia/Tokyo",
         ignore_default_args=["--enable-automation"],
         # 不帶自動化痕跡（navigator.webdriver）——Google OAuth 會據此
         # 顯示「這個瀏覽器可能有安全疑慮」並拒絕登入
@@ -112,7 +115,7 @@ def _session_user(page) -> str:
 
 def _shot(page, tag: str, echo) -> None:
     _SHOT_DIR.mkdir(parents=True, exist_ok=True)
-    f = _SHOT_DIR / f"{datetime.now():%m%d-%H%M%S}-{tag}.png"
+    f = _SHOT_DIR / f"{japan_now():%m%d-%H%M%S}-{tag}.png"
     try:
         page.screenshot(path=str(f))
         echo(f"  （截圖：{f}）")
@@ -335,14 +338,14 @@ def _wait_for_open(page, hut_slug: str, stay: date, room: str | None,
 
     d = api_day()
     opens = d.opens_at if d else None
-    if not opens or datetime.now() >= opens:
+    if not opens or japan_now() >= opens:
         return None
-    if opens - datetime.now() > timedelta(hours=12):
-        raise BookError(f"{stay} 的受付 {opens:%-m/%-d %H:%M} 才開始——"
+    if opens - japan_now() > timedelta(hours=12):
+        raise BookError(f"{stay} 的受付 {opens:%m/%d %H:%M} 才開始——"
                         f"開賣當天早上再跑本指令")
-    echo(f"⏳ {stay} 尚未開賣（{opens:%H:%M} 受付開始）——"
+    echo(f"⏳ {stay} 尚未開賣（{opens:%H:%M} 日本時間受付開始）——"
          "瀏覽器待機中，開賣即自動搶（Ctrl-C 可中止）")
-    while (r := (opens - datetime.now()).total_seconds()) > 15:
+    while (r := (opens - japan_now()).total_seconds()) > 15:
         if r > 120:
             echo(f"  距離開賣還有 {int(r // 60)} 分鐘…")
         _time.sleep(min(60.0, r - 15))
@@ -350,7 +353,7 @@ def _wait_for_open(page, hut_slug: str, stay: date, room: str | None,
     echo(f"  開賣！開始重載日曆搶位（至 {deadline:%H:%M} 為止）…")
     # 開賣瞬間直接重載日曆找可點房型——判斷與點擊同一來源，
     # 不受 API 與前端渲染的時間差影響（與人手動 F5 等價）
-    while datetime.now() < deadline:
+    while japan_now() < deadline:
         page.reload(wait_until="domcontentloaded")
         try:
             page.wait_for_selector("td[data-date]", timeout=15000)

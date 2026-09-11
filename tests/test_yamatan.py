@@ -6,6 +6,7 @@
 
 from datetime import date, datetime, time, timedelta
 
+from yama.japan_time import japan_now
 from yama.hunt import parse_weekday, target_dates
 from yama.yamatan import (BookingWindow, HutDay, RoomDay, _compute_month,
                           _months_before, _parse_window)
@@ -45,7 +46,7 @@ def test_parse_window():
 def _hutday(opens_delta_hours: int) -> HutDay:
     return HutDay(day=date(2026, 10, 10), holiday=False,
                   rooms=[RoomDay(room="相部屋", capacity=10, booked=0, stock=10)],
-                  opens_at=datetime.now() + timedelta(hours=opens_delta_hours))
+                  opens_at=japan_now() + timedelta(hours=opens_delta_hours))
 
 
 def test_not_yet_open_masks_placeholder_capacity():
@@ -205,7 +206,7 @@ def test_hunt_acts_on_release_transition(monkeypatch):
                     unit_based=True, min_guests=2)]
     freed = [RoomDay(room="2名様", capacity=2, booked=7, stock=8,
                      unit_based=True, min_guests=2)]
-    stay = target_dates(5, date.today(), horizon_days=8)[0]
+    stay = target_dates(5, japan_now().date(), horizon_days=8)[0]
     rounds = iter([full, freed, freed])
     acted = []
 

@@ -23,6 +23,8 @@
 
 from __future__ import annotations
 
+from .japan_time import japan_now
+
 import calendar
 import json
 import urllib.parse
@@ -71,7 +73,7 @@ class BookingWindow:
     open_time: time
 
     def opens_at(self, stay: date) -> datetime:
-        """該宿泊日的受付開始時刻（日本時間；本模組假設本機時區為 JST）。"""
+        """該宿泊日的受付開始時刻（日本時間；不含 tzinfo，與 japan_now() 比較）。"""
         if self.unit == "months":
             open_day = _months_before(stay, self.num)
         else:
@@ -149,7 +151,7 @@ class HutDay:
     _now: datetime | None = field(default=None, repr=False)  # 測試用時刻注入
 
     def _clock(self) -> datetime:
-        return self._now or datetime.now()
+        return self._now or japan_now()
 
     @property
     def remaining_total(self) -> int:
@@ -180,7 +182,7 @@ class HutDay:
         if not self.rooms:
             return "非營業期間"
         if self.not_yet_open:
-            return f"未開賣（{self.opens_at:%-m/%-d %H:%M} 開賣）"
+            return f"未開賣（{self.opens_at:%m/%d %H:%M} 開賣）"
         if self.past_deadline:
             return "受付締切"
         avail = [r for r in self.rooms

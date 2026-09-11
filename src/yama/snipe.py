@@ -14,9 +14,11 @@
 
 from __future__ import annotations
 
+from .japan_time import japan_now
+
 import time as _time
 import webbrowser
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from .yamatan import HutDay, booking_url, get_month_availability
 
@@ -52,7 +54,7 @@ def snipe(hut_slug: str, hut_name: str, stay: date, party: int = 1,
         return True
 
     opens = day.opens_at
-    now = datetime.now()
+    now = japan_now()
     if opens is None or now > opens + timedelta(hours=1):
         # 早已開賣：密集輪詢等不到釋出，查一次就好
         hits = _hits(day, party)
@@ -64,20 +66,20 @@ def snipe(hut_slug: str, hut_name: str, stay: date, party: int = 1,
         return False
 
     if now < opens - timedelta(hours=12):
-        echo(f"{hut_name} {stay} 的受付 {opens:%-m/%-d %H:%M} 才開始——"
+        echo(f"{hut_name} {stay} 的受付 {opens:%m/%d %H:%M} 才開始——"
              f"開賣當天早上再執行本指令。等不及可先掛每小時監控：\n"
              f"  yama watch hut {hut_name} {stay}")
         return False
     if now < opens:
-        echo(f"{hut_name} {stay} 的受付 {opens:%-m/%-d %H:%M} 開始，"
+        echo(f"{hut_name} {stay} 的受付 {opens:%m/%d %H:%M} 開始，"
              f"開賣前 60 秒進入密集輪詢（Ctrl-C 可中止）")
-        while (remain := (opens - datetime.now()).total_seconds()) > 60:
+        while (remain := (opens - japan_now()).total_seconds()) > 60:
             echo(f"  距離開賣還有 {int(remain // 60)} 分鐘…")
             _time.sleep(min(300.0, remain - 60))
 
     deadline = opens + timedelta(minutes=timeout_min)
     echo(f"開始輪詢（每 {poll_seconds:g} 秒，至 {deadline:%H:%M} 為止）…")
-    while datetime.now() < deadline:
+    while japan_now() < deadline:
         try:
             day = _fetch_day(hut_slug, stay)
         except Exception as e:  # 開賣瞬間平台常過載，失敗就下一輪再試
@@ -87,7 +89,7 @@ def snipe(hut_slug: str, hut_name: str, stay: date, party: int = 1,
             hits = _hits(day, party)
             if hits:
                 return found(hits)
-            echo(f"  {datetime.now():%H:%M:%S} {day.status}")
+            echo(f"  {japan_now():%H:%M:%S} {day.status}")
         _time.sleep(poll_seconds)
     echo(f"超時：開賣後 {timeout_min} 分鐘內沒等到 ≥{party} 位的空位。"
          f"改掛長期監控：`yama watch hut {hut_name} {stay}`")
