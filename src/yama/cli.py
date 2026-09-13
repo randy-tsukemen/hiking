@@ -471,6 +471,13 @@ def run() -> None:
     """進入點：`yama 燕岳` 等同 `yama plan 燕岳`。"""
     import sys
 
+    if sys.platform == "win32":
+        # Redirected Windows streams may default to CP950, which cannot encode
+        # Japanese hut names. Native consoles also accept UTF-8 via Python.
+        for stream in (sys.stdout, sys.stderr):
+            if hasattr(stream, "reconfigure"):
+                stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+
     args = sys.argv[1:]
     if args and not args[0].startswith("-") and args[0] not in _COMMANDS:
         sys.argv.insert(1, "plan")

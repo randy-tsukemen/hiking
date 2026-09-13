@@ -17,10 +17,12 @@ Google 登入無法自動化（bot 偵測會擋帳密自動輸入），所以採
 
 from __future__ import annotations
 
+from .japan_time import japan_now
+
 import json
 import re
 import time as _time
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 _CACHE = Path.home() / ".yama_cache"
@@ -74,6 +76,7 @@ def _launch(p, headless: bool = False):
     _PROFILE_DIR.mkdir(parents=True, exist_ok=True)
     return p.chromium.launch_persistent_context(
         str(_PROFILE_DIR), channel="chrome", headless=headless,
+        timezone_id="Asia/Tokyo",
         ignore_default_args=["--enable-automation"],
         # 不帶自動化痕跡（navigator.webdriver）——Google OAuth 會據此
         # 顯示「這個瀏覽器可能有安全疑慮」並拒絕登入
@@ -112,7 +115,7 @@ def _session_user(page) -> str:
 
 def _shot(page, tag: str, echo) -> None:
     _SHOT_DIR.mkdir(parents=True, exist_ok=True)
-    f = _SHOT_DIR / f"{datetime.now():%m%d-%H%M%S}-{tag}.png"
+    f = _SHOT_DIR / f"{japan_now():%m%d-%H%M%S}-{tag}.png"
     try:
         page.screenshot(path=str(f))
         echo(f"  （截圖：{f}）")
@@ -122,9 +125,10 @@ def _shot(page, tag: str, echo) -> None:
 
 def setup(echo=print) -> None:
     """首次設定：開視窗讓使用者手動 Google 登入，並產生住客資料範本。"""
-    if not _GUEST_FILE.exists():
+    if not _GUEST_FILE.exists() or _GUEST_FILE.stat().st_size == 0:
+        _GUEST_FILE.parent.mkdir(parents=True, exist_ok=True)
         _GUEST_FILE.write_text(json.dumps(_GUEST_TEMPLATE,
-                                          ensure_ascii=False, indent=1))
+                                          ensure_ascii=False, indent=1), encoding="utf-8")
         echo(f"已建立住客資料範本，請編輯：{_GUEST_FILE}")
     sync_playwright = _require_playwright()
     with sync_playwright() as p:
@@ -153,7 +157,7 @@ def setup(echo=print) -> None:
 def _load_guest() -> dict:
     try:
         return {k: str(v) for k, v in
-                json.loads(_GUEST_FILE.read_text()).items() if str(v).strip()}
+                json.loads(_GUEST_FILE.read_text(encoding="utf-8-sig")).items() if str(v).strip()}
     except (OSError, ValueError):
         return {}
 
@@ -290,8 +294,14 @@ def _handle_plan_modal(page, dlg, plan_kw: str | None,
     echo("  ⚠️ 捲到底後仍找不到可按的下一步，請在視窗手動接手")
 
 
-def _find_slot(page, stay: date, room: str | None):
-    """日曆（FullCalendar）上找當日可點的房型連結；沒有回 None。"""
+def _room_fits_party(label: str, party: int) -> bool:
+    """按人數命名的利用房型須符合入住人數；相部屋等名稱不在此推定容量。"""
+    counts = re.findall(r"(?:(\d+)\s*名?\s*[〜～~－–-]\s*)?(\d+)\s*名様", label)
+    return all(int(low or high) <= party <= int(high) for low, high in counts)
+
+
+def _find_slot(page, stay: date, room: str | None, party: int = 1):
+    """日曆上找當日可點且利用人數相符的房型連結；沒有回 None。"""
     cell = page.locator(f'td[data-date="{stay.isoformat()}"]')
     if cell.count() == 0:
         # 備援：改版離開 FullCalendar 時退回文字比對
@@ -312,7 +322,9 @@ def _find_slot(page, stay: date, room: str | None):
              else cell.locator("a.fc-event"))
     for a in links.all():
         # 圖例：○空き ×満室or未開放 休定休 前＝予約開始前（未開賣佔位）
-        if not a.inner_text().strip().startswith(("×", "前", "休", "満")):
+        label = a.inner_text().strip()
+        if (not label.startswith(("×", "前", "休", "満"))
+                and _room_fits_party(label, party)):
             return a
     return None
 
@@ -335,14 +347,14 @@ def _wait_for_open(page, hut_slug: str, stay: date, room: str | None,
 
     d = api_day()
     opens = d.opens_at if d else None
-    if not opens or datetime.now() >= opens:
+    if not opens or japan_now() >= opens:
         return None
-    if opens - datetime.now() > timedelta(hours=12):
-        raise BookError(f"{stay} 的受付 {opens:%-m/%-d %H:%M} 才開始——"
+    if opens - japan_now() > timedelta(hours=12):
+        raise BookError(f"{stay} 的受付 {opens:%m/%d %H:%M} 才開始——"
                         f"開賣當天早上再跑本指令")
-    echo(f"⏳ {stay} 尚未開賣（{opens:%H:%M} 受付開始）——"
+    echo(f"⏳ {stay} 尚未開賣（{opens:%H:%M} 日本時間受付開始）——"
          "瀏覽器待機中，開賣即自動搶（Ctrl-C 可中止）")
-    while (r := (opens - datetime.now()).total_seconds()) > 15:
+    while (r := (opens - japan_now()).total_seconds()) > 15:
         if r > 120:
             echo(f"  距離開賣還有 {int(r // 60)} 分鐘…")
         _time.sleep(min(60.0, r - 15))
@@ -350,14 +362,14 @@ def _wait_for_open(page, hut_slug: str, stay: date, room: str | None,
     echo(f"  開賣！開始重載日曆搶位（至 {deadline:%H:%M} 為止）…")
     # 開賣瞬間直接重載日曆找可點房型——判斷與點擊同一來源，
     # 不受 API 與前端渲染的時間差影響（與人手動 F5 等價）
-    while datetime.now() < deadline:
+    while japan_now() < deadline:
         page.reload(wait_until="domcontentloaded")
         try:
             page.wait_for_selector("td[data-date]", timeout=15000)
         except Exception:
             pass
         page.wait_for_timeout(600)
-        t = _find_slot(page, stay, room)
+        t = _find_slot(page, stay, room, party)
         if t is not None:
             return t
         _time.sleep(2)
@@ -370,6 +382,12 @@ def book(hut_slug: str, hut_name: str, stay: date,
          opts: dict[str, int] | None = None, echo=print) -> None:
     """自動走到確認畫面前：選日→選房→填表→停在最終確定前並通知。"""
     from .watch import _notify
+
+    party = men + women
+    if men < 0 or women < 0 or party < 1:
+        raise BookError("入住人數至少需要 1 人，男女人數不可為負數")
+    if room and not _room_fits_party(room, party):
+        raise BookError(f"指定房型「{room}」不符合 {party} 位入住人數")
 
     sync_playwright = _require_playwright()
     guest = _load_guest()
@@ -391,14 +409,14 @@ def book(hut_slug: str, hut_name: str, stay: date,
             raise BookError("尚未登入 Yamatan——先跑 `yama book --setup` "
                             "在視窗裡用 Google 登入一次")
 
-        target = _find_slot(page, stay, room)
+        target = _find_slot(page, stay, room, party)
         if target is None:
             # 未開賣的話待機到受付開始，開賣瞬間自動搶
             target = _wait_for_open(page, hut_slug, stay, room,
-                                    max(1, men + women), echo)
+                                    party, echo)
         if target is None:
             _shot(page, "calendar", echo)
-            raise BookError(f"{stay} 找不到可訂的房型"
+            raise BookError(f"{stay} 找不到適合 {party} 位入住的可訂房型"
                             f"{f'「{room}」' if room else ''}"
                             "（満室/非營業？先用 yama hut 確認）")
         echo(f"選擇 {stay} {target.inner_text().strip()}")
